@@ -1,0 +1,6 @@
+*.pyc
+*.pyo
+.vscode
+/database/*
+/static/compiled/*
+/static/.webassets-cache/*

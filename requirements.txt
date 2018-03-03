@@ -1,0 +1,10 @@
+libscss
+cssmin
+jsmin
+flask
+flask-assets
+flask-login
+flask-bootstrap
+flask-wtf
+wtforms
+bcrypt

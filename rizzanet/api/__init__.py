@@ -1,0 +1,1 @@
+from .api import bind_api_routes

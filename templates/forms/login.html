@@ -1,0 +1,22 @@
+{% extends 'layout.html'%}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block title %}
+    Login to rizza.net
+{% endblock %}
+{% block content %}
+    <div class="row justify-content-md-center"><div class="col-md-8">
+        <h1>Login:</h1>
+        <hr/>
+        <form method='POST' action='/login/{{path or ''}}'>
+            {{ wtf.form_field(form.username) }}
+            {{ wtf.form_field(form.password) }}
+            {{ wtf.form_field(form.remember_me) }}
+            {{ form.csrf_token }}
+            {% if error is defined %}
+                <div class="alert alert-danger"><b>Error: </b>{{error}}</div>
+            {% endif %}
+            <input type="submit" class="btn btn-primary"></input>
+        </form>
+    </div></div>
+    
+{% endblock %}
