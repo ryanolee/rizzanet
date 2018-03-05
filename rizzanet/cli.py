@@ -9,7 +9,7 @@ def bind_cli_commands(app):
     @click.option('-p','--password',help='The new password of the admin user.', default='rizza')
     def install(username,password):
         import sqlalchemy
-        from rizzanet.models import User,Content
+        from rizzanet.models import User,Content,ContentType,ContentData
         from rizzanet.db import db_session
         click.echo('Creating user %s...' % username)
         admin_user=User('admin',username,password,99999)
@@ -23,9 +23,21 @@ def bind_cli_commands(app):
         except Exception as i_error:
             click.secho("Command failed: %s " % i_error._message, err=True, bg='red')
             return
-        child=root_node.add_child('index',0,0)
-        click.echo('Creating index content node. %r'%child)
+        click.echo('Creating article content type.')
+        article=ContentType.create('article',{
+            'title':str,
+            'content':str
+        })
+        click.echo('Creating article content object.')
+        data = ContentData.create('article',{
+            'title':'Rizza\'s website!',
+            'content':'This is as website!'
+        })
+        click.echo('Creating index content node.')
+        child=root_node.add_child('index',article,data)
+        
         click.secho('Done!',fg='white',bg='green')
+
     @rizzanet_cli.command(help='Drops all tables from the database.')
     def purge_db():
         from rizzanet.db import Base,engine

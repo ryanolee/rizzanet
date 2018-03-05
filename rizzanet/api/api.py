@@ -11,7 +11,7 @@ def bind_api_routes(app):
         from rizzanet.models import Content
         response=Content.get_by_path(path)
         if response == None:
-             return jsonify(
+             return jsonify()
         return jsonify(
             id=response.id,
             remote_id=response.remote_id
