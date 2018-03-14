@@ -4,6 +4,7 @@ from rizzanet.db import Base,db_session
 from .content_data import ContentData
 from .content_type import ContentType
 from hashlib import md5
+from flask import render_template
 
 class Content(Base):
     '''Main content object for site'''
@@ -38,7 +39,7 @@ class Content(Base):
         return '<Content(id:{0},parent_id:{1},name:{2},content_type_id:{3},content_data_id:{4})>'.format(self.id,self.parent_id,self.name,self.content_type_id,self.content_data_id)
     def regenarate_remote_id(self):
         '''Rebuilds hash tree for child nodes of this tree'''
-        self.remote_id=md5(self.get_full_path().encode()).hexdigest()
+        self.remote_id=md5(self.get_full_path().strip('/').encode()).hexdigest()
         for child in self.get_children():
             child.regenarate_remote_id()
     def get_children(self):
@@ -48,19 +49,40 @@ class Content(Base):
         parent=self.get_parent()
         if parent == None:
             return ''
-        return parent.get_full_path()+self.name
+        return parent.get_full_path()+'/'+self.name
     def get_parent(self):
         '''gets parent node of a given node (if root node returns None)'''
         if self.parent_id==None:
             return None
         else:
             return Content.query.get(self.parent_id)
+    def render(self):
+        '''renders a content location'''
+        return render_template(self.content_type.get_view_path(),**self.content_data.get_data())
     def add_child(self,name,content_type_id,content_data_id):
         '''Adds and commits a new child into the database'''
         new_node = Content(self.id, name, content_type_id, content_data_id)
         db_session.add(new_node)
         db_session.commit()
         return new_node
+    def check_circular(stack=[]):
+        '''Checks for circular references in content tree'''
+        stack.push(self.id)
+        if self.parent_id == '':
+            return True
+        if self.parent_id in stack:
+            return False
+        return self.get_parent().check_circular(stack)
+    def move(new_parent):
+        if isinstance(new_parent,Content):
+            new_parent_id = new_parent.id
+        else:
+            new_parent_id = new_parent
+        if self.check_circular([new_parent_id]):
+            return False
+        self.parent_id=new_parent_id
+        db_session.commit()
+        return self
     @classmethod
     def get_by_remote_id(self,remote_id):
         '''gets class by remote id'''
@@ -68,6 +90,9 @@ class Content(Base):
     @classmethod
     def get_by_path(self,path):
         '''gets class by full path'''
-        return self.get_by_remote_id(md5(path.encode()).hexdigest())
+        return self.get_by_remote_id(md5(path.strip('/').encode()).hexdigest())
+    @classmethod
+    def get_by_id(self,id):
+        return db_session.query(self).filter(self.id==id).first()
             
         

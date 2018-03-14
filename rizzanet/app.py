@@ -6,20 +6,21 @@ from rizzanet.api import bind_api_routes
 from .db import init_db
 from .cli import bind_cli_commands
 from .login import bind_login
-
+from .routing import bind_converters_to_app
 import rizzanet.models,rizzanet.views as views,os
 
 def create_app(config=None):
     """creates the app"""
     init_db()
     app = Flask('rizza_app',static_url_path='',static_folder=os.path.dirname(__file__)+"/../static/", template_folder=os.path.dirname(__file__)+"/../templates/")
+    bind_converters_to_app(app)
     bind_bundles(app)
     Bootstrap(app)
-    views.register_routes(app)
     bind_cli_commands(app)
     bind_login(app)
     bind_admin_routes(app)
     bind_api_routes(app)
+    views.register_routes(app)
     app.secret_key='123456789'
     return app
 

@@ -14,27 +14,29 @@ def bind_cli_commands(app):
         click.echo('Creating user %s...' % username)
         admin_user=User('admin',username,password,99999)
         db_session.add(admin_user)
-        click.echo('Creating root content node.')
-        root_node=Content(None,'root',0,0)
-        db_session.add(root_node)
+       
         click.echo('Comitting to database...')
         try:
             db_session.commit()
         except Exception as i_error:
             click.secho("Command failed: %s " % i_error._message, err=True, bg='red')
-            return
+            return        
         click.echo('Creating article content type.')
         article=ContentType.create('article',{
             'title':str,
             'content':str
-        })
+        },'content_types/article.html')
         click.echo('Creating article content object.')
         data = ContentData.create('article',{
-            'title':'Rizza\'s website!',
+            'title':'my content',
             'content':'This is as website!'
         })
-        click.echo('Creating index content node.')
-        child=root_node.add_child('index',article,data)
+        click.echo('Creating root content node.')
+        root_node=Content(None,'root',article,data)
+        db_session.add(root_node)
+        db_session.commit()
+
+        
         
         click.secho('Done!',fg='white',bg='green')
 

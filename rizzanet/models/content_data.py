@@ -7,7 +7,8 @@ class ContentData(Base):
     '''Defines content types'''
     __tablename__ = 'ContentData'
     id = Column(Integer,primary_key=True)
-    datatype_id=Column(Integer,ForeignKey('ContentType.id'))
+    datatype_id = Column(Integer,ForeignKey('ContentType.id'))
+    datatype = Column(String(255))
     data = Column(PickleType)
     def __init__(self,datatype,data):
         self.datatype = datatype
@@ -16,6 +17,8 @@ class ContentData(Base):
         return self.data
     def set_data(self, data):
         self.data = data
+    def get_datatype(self):
+        return self.datatype
     @classmethod 
     def create(self,name,data):
         if isinstance(name,ContentType):
