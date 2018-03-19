@@ -8,3 +8,4 @@ flask-bootstrap
 flask-wtf
 wtforms
 bcrypt
+blinker

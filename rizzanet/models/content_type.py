@@ -9,10 +9,12 @@ class ContentType(Base):
     name = Column(String,unique=True)
     schema = Column(PickleType)
     view_path = Column(String(255))
+
     def __init__(self,name,schema,view_path=''):
         self.name = name
         self.schema = schema
         self.view_path = view_path
+
     def verify(self,data):
         for name,datatype in self.schema.items():
             if not name in data.keys():
@@ -22,12 +24,51 @@ class ContentType(Base):
                 print('Error: verification failed for item {0} due to attribute {1} not matching in type with schema {2} != {3}.'.format(self.name,name,type(data[name]),datatype))
                 return False
         return True
+
     def get_view_path(self):
         return self.view_path
+
+    def get_name(self):
+        return self.name
+
+    def get_id(self):
+        return self.id
+
     @classmethod 
     def create(self,name,schema,view_path=''):
         '''Creates a new content type'''
         content_type = self(name,schema,view_path)
         db_session.add(content_type)
-        db_session.commit()
+        db_session.flush()
+        return content_type
+    
+    @classmethod
+    def get_content_type_from_mixed(self, content_type):
+        '''gets a content type from a mixed value'''
+        from .content_data import ContentData
+        if isinstance(content_type,str):
+            return ContentType.get_by_name(content_type)
+        elif isinstance(content_type,ContentType):
+            return content_type
+        elif isinstance(content_type,int):
+            return self.get_by_id(content_type)
+        elif isinstance(content_type,ContentData):
+            return  self.get_by_id(content_type.get_datatype_id())
+        else:
+            return None
+    
+    @classmethod
+    def get_by_id(self, type_id):
+        try:
+            content_type_id = db_session.query(self).filter( self.id ==  type_id).one()
+        except Exception as error:
+            raise Exception('Error no content class found with id:{0} error: {1}'.format( type_id,error))
+        return content_type_id
+
+    @classmethod 
+    def get_by_name(self, name):
+        try:
+            content_type = db_session.query(self).filter(name==self.name).one()
+        except Exception as error:
+            raise Exception('Error no content class found with name:{0} error: {1}'.format(name,error))
         return content_type
