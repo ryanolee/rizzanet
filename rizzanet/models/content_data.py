@@ -1,6 +1,7 @@
 from sqlalchemy import Column,String,Integer,ForeignKey,PickleType
 from sqlalchemy.orm import relationship,backref
-from rizzanet.db import Base,db_session
+from rizzanet.db import Base
+from flask import g
 from .content_type import ContentType
 
 class ContentData(Base):
@@ -36,8 +37,8 @@ class ContentData(Base):
             schema = ContentType.get_by_name(name)
         if schema.verify(data):
             content_data = ContentData(name,data)
-            db_session.add(content_data)
-            db_session.flush()
+            g.db_session.add(content_data)
+            g.db_session.flush()
             return content_data
         else:
             return None
@@ -45,7 +46,7 @@ class ContentData(Base):
     @classmethod
     def get_by_id(self, data_id):
         try:
-            content_data = db_session.query(self).filter( self.id ==  data_id).one()
+            content_data = g.db_session.query(self).filter( self.id ==  data_id).one()
         except Exception as error:
             raise Exception('Error no content data found with id:{0} error: {1}'.format( data_id,error))
         return content_data

@@ -1,5 +1,6 @@
 import click
 from flask.cli import AppGroup
+from flask import g
 def bind_cli_commands(app):
     '''Callback to bind CLI commands to app'''
     rizzanet_cli=AppGroup('rizzanet',help='The Commands for rizzanet.')
@@ -10,14 +11,13 @@ def bind_cli_commands(app):
     def install(username,password):
         import sqlalchemy
         from rizzanet.models import User,Content,ContentType,ContentData
-        from rizzanet.db import db_session
         click.echo('Creating user %s...' % username)
         admin_user=User('admin',username,password,99999)
-        db_session.add(admin_user)
+        g.db_session.add(admin_user)
        
         click.echo('Comitting to database...')
         try:
-            db_session.commit()
+            g.db_session.commit()
         except Exception as i_error:
             click.secho("Command failed: %s " % i_error._message, err=True, bg='red')
             return        
@@ -33,8 +33,8 @@ def bind_cli_commands(app):
         })
         click.echo('Creating root content node.')
         root_node=Content(None,'root',article,data)
-        db_session.add(root_node)
-        db_session.commit()
+        g.db_session.add(root_node)
+        g.db_session.commit()
 
         
         

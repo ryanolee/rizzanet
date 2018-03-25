@@ -1,6 +1,7 @@
-from flask import jsonify
+from flask import jsonify, g
 from flask_login import login_required
-
+from sys import setrecursionlimit
+setrecursionlimit(1000)
 def bind_api_routes(app):
  
     '''Binds flask routes for api'''
@@ -33,12 +34,29 @@ def bind_api_routes(app):
         data = [handle_get_content_response(child,True) for child in response.get_children()]
         return api_response(data)
 
+    @app.route('/api/get/id/subtree/<regex("\d+"):parent_id>',methods=['GET'])
+    @login_required
+    def get_subtree(parent_id):
+        from rizzanet.models import Content
+        response=Content.get_by_id(parent_id)
+        if response == None:
+            return api_error('Error: resource with id {0} not found.'.format(id), 404)
+        obj = response.get_subtree()
+        def apply_rec(obj):
+            to_return = handle_get_content_response(obj,True)
+            to_return['children']=[]
+            for child in obj.children:
+                to_return['children'].append(apply_rec(child))
+            if to_return['children'] == []:
+                del(to_return['children'])
+            return to_return
+        return api_response(apply_rec(obj))
+
     @app.route('/api/create/',methods=['GET','POST'])
     @login_required
     def create_content_object():
         from flask import request
         from rizzanet.models import Content,ContentData
-        from rizzanet.db import db_session
         import json
         required_fields = ['parent_id','name','content_type','content_data']
         for field in required_fields:
@@ -53,7 +71,7 @@ def bind_api_routes(app):
             data = ContentData.create(request.values.get('content_type'), json.loads(request.values.get('content_data')))
             response = parent.add_child(name,data)
         except Exception:
-            db_session.rollback()
+            g.db_session.rollback()
             return api_error('Error: failed to make changes to db',500)
         res = handle_commit_transaction()
         if res != False:
@@ -80,10 +98,9 @@ def bind_api_routes(app):
 
     def handle_commit_transaction():
         '''Handles comitting content to the database and returning error responses on error'''
-        from rizzanet.db import db_session
         try:
-            db_session.commit()
+            g.db_session.commit()
         except Exception as error:
-            db_session.rollback()
+            g.db_session.rollback()
             return api_error('Error: failed to make changes to db (error:{0}).'.format(error),500) 
         return False

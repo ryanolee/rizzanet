@@ -1,10 +1,10 @@
 from sqlalchemy import Column,String,Integer,ForeignKey
 from sqlalchemy.orm import relationship,backref
-from rizzanet.db import Base,db_session
+from rizzanet.db import Base
 from .content_data import ContentData
 from .content_type import ContentType
 from hashlib import md5
-from flask import render_template
+from flask import render_template,g
 
 class Content(Base):
     '''Main content object for site'''
@@ -46,7 +46,14 @@ class Content(Base):
 
     def get_children(self):
         '''Gets children of a given node'''
-        return db_session.query(Content).filter(Content.parent_id==self.id).all()
+        return g.db_session.query(Content).filter(Content.parent_id==self.id).all()
+
+    def get_subtree(self):
+        children = self.get_children()
+        for child in children:
+            child.get_subtree()
+        self.children = children
+        return self
 
     def get_full_path(self):
         '''gets full path of content object'''
@@ -71,8 +78,8 @@ class Content(Base):
         if content_type_id == None: content_type_id = content_data_id
         content_type_id = ContentType.get_content_type_from_mixed(content_type_id).get_id()
         new_node = Content(self.id, name, content_type_id, content_data_id)
-        db_session.add(new_node)
-        db_session.flush()
+        g.db_session.add(new_node)
+        g.db_session.flush()
         return new_node
 
     def check_circular(self, stack=[]):
@@ -92,7 +99,7 @@ class Content(Base):
         if self.check_circular([new_parent_id]):
             return False
         self.parent_id=new_parent_id
-        db_session.flush()
+        g.db_session.flush()
         return self
 
     def get_content_data(self):
@@ -102,7 +109,7 @@ class Content(Base):
     @classmethod
     def get_by_remote_id(self,remote_id):
         '''gets class by remote id'''
-        return db_session.query(self).filter(self.remote_id==remote_id).first()
+        return g.db_session.query(self).filter(self.remote_id==remote_id).first()
     @classmethod
     def get_by_path(self,path):
         '''gets class by full path'''
@@ -111,6 +118,6 @@ class Content(Base):
     @classmethod
     def get_by_id(self,id):
         '''Gets content by id'''
-        return db_session.query(self).filter(self.id==id).first()
+        return g.db_session.query(self).filter(self.id==id).first()
             
         

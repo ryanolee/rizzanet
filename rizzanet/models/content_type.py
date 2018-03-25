@@ -1,6 +1,7 @@
 from sqlalchemy import Column,String,Integer,ForeignKey,PickleType
 from sqlalchemy.orm import relationship,backref
-from rizzanet.db import Base,db_session
+from rizzanet.db import Base
+from flask import g
 
 class ContentType(Base):
     '''Defines content types'''
@@ -38,8 +39,8 @@ class ContentType(Base):
     def create(self,name,schema,view_path=''):
         '''Creates a new content type'''
         content_type = self(name,schema,view_path)
-        db_session.add(content_type)
-        db_session.flush()
+        g.db_session.add(content_type)
+        g.db_session.flush()
         return content_type
     
     @classmethod
@@ -60,7 +61,7 @@ class ContentType(Base):
     @classmethod
     def get_by_id(self, type_id):
         try:
-            content_type_id = db_session.query(self).filter( self.id ==  type_id).one()
+            content_type_id = g.db_session.query(self).filter( self.id ==  type_id).one()
         except Exception as error:
             raise Exception('Error no content class found with id:{0} error: {1}'.format( type_id,error))
         return content_type_id
@@ -68,7 +69,7 @@ class ContentType(Base):
     @classmethod 
     def get_by_name(self, name):
         try:
-            content_type = db_session.query(self).filter(name==self.name).one()
+            content_type = g.db_session.query(self).filter(name==self.name).one()
         except Exception as error:
             raise Exception('Error no content class found with name:{0} error: {1}'.format(name,error))
         return content_type

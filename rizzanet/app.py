@@ -3,7 +3,7 @@ from flask import Flask,render_template
 from flask_bootstrap import Bootstrap
 from rizzanet.admin import bind_admin_routes
 from rizzanet.api import bind_api_routes
-from .db import init_db,bind_app_events
+from .db import bind_app_events
 from .cli import bind_cli_commands
 from .login import bind_login
 from .routing import bind_converters_to_app
@@ -11,7 +11,6 @@ import rizzanet.models,rizzanet.views as views,os
 
 def create_app(config=None):
     """creates the app"""
-    init_db()
     app = Flask('rizza_app',static_url_path='/compiled/',static_folder=os.path.dirname(__file__)+"/../static/", template_folder=os.path.dirname(__file__)+"/../templates/")
     bind_converters_to_app(app)
     bind_bundles(app)
