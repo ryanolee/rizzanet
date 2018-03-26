@@ -16,6 +16,14 @@ class ContentType(Base):
         self.schema = schema
         self.view_path = view_path
 
+    def as_dict(self):
+        return dict(
+            id = self.id,
+            name = self.name,
+            schema = self.schema,
+            view_path = self.view_path
+        )
+
     def verify(self,data):
         for name,datatype in self.schema.items():
             if not name in data.keys():

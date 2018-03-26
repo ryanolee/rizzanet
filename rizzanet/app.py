@@ -3,11 +3,12 @@ from flask import Flask,render_template
 from flask_bootstrap import Bootstrap
 from rizzanet.admin import bind_admin_routes
 from rizzanet.api import bind_api_routes
+from rizzanet.views import bind_jinja2_functions,register_routes
 from .db import bind_app_events
 from .cli import bind_cli_commands
 from .login import bind_login
 from .routing import bind_converters_to_app
-import rizzanet.models,rizzanet.views as views,os
+import os
 
 def create_app(config=None):
     """creates the app"""
@@ -20,7 +21,8 @@ def create_app(config=None):
     bind_admin_routes(app)
     bind_api_routes(app)
     bind_app_events(app)
-    views.register_routes(app)
+    bind_jinja2_functions(app)
+    register_routes(app)
     app.secret_key='123456789'
     return app
 

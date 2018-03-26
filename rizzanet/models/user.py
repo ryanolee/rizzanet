@@ -2,6 +2,7 @@ from sqlalchemy import Column,String,Integer
 from rizzanet.db import Base
 from flask_login import UserMixin
 import bcrypt
+
 class User(Base,UserMixin):
     __tablename__ = 'Users'
     id = Column(Integer,  primary_key=True)

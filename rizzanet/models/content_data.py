@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship,backref
 from rizzanet.db import Base
 from flask import g
 from .content_type import ContentType
-
 class ContentData(Base):
     '''Defines content types'''
     __tablename__ = 'ContentData'
@@ -16,6 +15,14 @@ class ContentData(Base):
         self.datatype = datatype
         self.data = data
         self.datatype_id = ContentType.get_content_type_from_mixed(datatype).get_id()
+    
+    def as_dict(self):
+        return dict(
+            id = self.id,
+            data_type = self.get_datatype(),
+            data_type_id = self.get_datatype_id(),
+            data = self.get_data()
+        )
     def get_data(self):
         return self.data
 

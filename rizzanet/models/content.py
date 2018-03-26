@@ -37,6 +37,16 @@ class Content(Base):
 
     def __repr__(self):
         return '<Content(id:{0},parent_id:{1},name:{2},content_type_id:{3},content_data_id:{4})>'.format(self.id,self.parent_id,self.name,self.content_type_id,self.content_data_id)
+        
+    def as_dict(self):
+        return dict(
+            id = self.id,
+            name = self.name,
+            remote_id = self.remote_id,
+            parent_id  = self.parent_id,
+            content_data_id = self.content_data_id,
+            content_type_id = self.content_data_id
+        )
 
     def regenarate_remote_id(self):
         '''Rebuilds hash tree for child nodes of this tree'''
@@ -48,12 +58,22 @@ class Content(Base):
         '''Gets children of a given node'''
         return g.db_session.query(Content).filter(Content.parent_id==self.id).all()
 
-    def get_subtree(self):
+    def get_subtree(self,**kwargs):
         children = self.get_children()
-        for child in children:
-            child.get_subtree()
+        as_dict = kwargs.get('as_dict',False)
+        with_content_objects = kwargs.get('with_content', False)
+        subtrees = [child.get_subtree(**kwargs) for child in children]
         self.children = children
+        if as_dict:
+            to_return = self.as_dict()
+            if with_content_objects:
+                to_return = {**self.get_content_data().as_dict(),**to_return}
+            if self.children == []:
+                return to_return
+            to_return['children'] = subtrees
+            return to_return
         return self
+
 
     def get_full_path(self):
         '''gets full path of content object'''
@@ -69,9 +89,16 @@ class Content(Base):
         else:
             return Content.query.get(self.parent_id)
 
+    def get_globals(self):
+        '''Gets globals to inject into context of jinja template on self.render() call'''
+        return dict(
+            current = self.as_dict()
+        )
+
     def render(self):
         '''renders a content location'''
-        return render_template(self.content_type.get_view_path(),**self.content_data.get_data())
+        context = {**self.content_data.get_data(),**self.get_globals()}
+        return render_template(self.content_type.get_view_path(),**context)
 
     def add_child(self,name,content_data_id,content_type_id=None):
         '''Adds and commits a new child into the database'''

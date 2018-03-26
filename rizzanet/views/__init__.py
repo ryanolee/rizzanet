@@ -1,3 +1,4 @@
 """Module for all rizzanet views"""
 from .main import register_routes
-__all__ = ['.main']
+from .extentions import bind_jinja2_functions
+__all__ = ['.main','.extentions']

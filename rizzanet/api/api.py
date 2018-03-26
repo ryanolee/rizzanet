@@ -70,9 +70,9 @@ def bind_api_routes(app):
         try:
             data = ContentData.create(request.values.get('content_type'), json.loads(request.values.get('content_data')))
             response = parent.add_child(name,data)
-        except Exception:
+        except Exception as error:
             g.db_session.rollback()
-            return api_error('Error: failed to make changes to db',500)
+            return api_error('Error: failed to make changes to db %s' % error,500)
         res = handle_commit_transaction()
         if res != False:
             return res
@@ -83,6 +83,7 @@ def bind_api_routes(app):
         response_data = {
             'id':response.id,
             'remote_id':response.remote_id,
+            'name':response.name,
             'content_type':content_data.get_datatype(),
             'data':content_data.get_data()
         }

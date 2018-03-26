@@ -1,23 +1,22 @@
 {% block navbar %}
     <!-- Nav tabs -->
+    {% set nav_data = get_subtree(get_path('nav').id, with_content=true).children %}
     <ul class="nav nav-tabs|pills" id="navId">
-        <li class="nav-item">
-            <a href="#tab1Id" class="nav-link active">Active</a>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-            <div class="dropdown-menu">
-                <a class="dropdown-item" href="#tab2Id">Action</a>
-                <a class="dropdown-item" href="#tab3Id">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#tab4Id">Action</a>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a href="#tab5Id" class="nav-link">Another link</a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link disabled">Disabled</a>
-        </li>
+        {% for item in nav_data %}
+            {% if item.children is defined %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{item.data.link}}" role="button" aria-haspopup="true" aria-expanded="false">{{item.data.label}}</a>
+                    <div class="dropdown-menu">
+                        {% for sub_item in item.children %}
+                            <a class="dropdown-item" href="{{sub_item.data.link}}">{{sub_item.data.label}}</a>
+                        {% endfor %}
+                    </div>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{{item.data.link}}" class="nav-link active">{{item.data.label}}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
     </ul>
 {% endblock %}

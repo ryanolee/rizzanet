@@ -58,9 +58,22 @@ def bind_cli_commands(app):
             'title':'my content',
             'content':'This is as website!'
         })
-        click.echo('Creating root content node.')
+        click.echo('creating nav item...')
+
+        nav_item=ContentType.create('nav_item',{
+            'label':str,
+            'link':str
+        })
+
+        nav_bar = ContentData.create('nav_item',{
+            'label':'nav_root',
+            'link':'#'
+        })
+        click.echo('Creating content structure.')
         root_node=Content(None,'root',article,data)
         g.db_session.add(root_node)
+        g.db_session.commit()
+        root_node.add_child('nav',nav_bar)
         g.db_session.commit()
         click.secho('Done!',fg='white',bg='green')
         #destroy_app_context(ctx)
@@ -68,6 +81,7 @@ def bind_cli_commands(app):
     @rizzanet_cli.command(help='Drops all tables from the database.')
     def purge_db():
         from rizzanet.db import Base,engine
+        from rizzanet.models import Content,ContentData,ContentType,User
         click.secho("!!! WARNING Running this command will purge all data from the current database !!!",bg='red',blink=True)
         click.echo("Are you sure you wish to continue? [y/N]", nl=False)
         input_char = click.getchar()
