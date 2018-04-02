@@ -1,0 +1,3 @@
+[submodule "rizzanet/admin/admin_app"]
+	path = rizzanet/admin/admin_app
+	url = git@github.com:ryanolee/rizzanet-admin.git

@@ -40,7 +40,6 @@ def redirect_login_reqired(func):
     '''Redirects to the current full path ('/login/{path}')'''
     @wraps(func)
     def redirect_wrap(*args,**kwargs):
-        print(current_user.is_authenticated)
         if current_user.is_authenticated:
             return func(*args,**kwargs)
         else:

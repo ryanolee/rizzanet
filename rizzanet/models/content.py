@@ -33,7 +33,8 @@ class Content(Base):
             self.content_type_id  = content_type_id
         self.name = name
         self.remote_id = ''
-        self.regenarate_remote_id()
+        print('Full path:'+self.get_full_path())
+        self.remote_id = self.get_remote_id()
 
     def __repr__(self):
         return '<Content(id:{0},parent_id:{1},name:{2},content_type_id:{3},content_data_id:{4})>'.format(self.id,self.parent_id,self.name,self.content_type_id,self.content_data_id)
@@ -50,9 +51,12 @@ class Content(Base):
 
     def regenarate_remote_id(self):
         '''Rebuilds hash tree for child nodes of this tree'''
-        self.remote_id=md5(self.get_full_path().strip('/').encode()).hexdigest()
+        self.remote_id = self.get_remote_id()
         for child in self.get_children():
             child.regenarate_remote_id()
+
+    def get_remote_id(self):
+        return md5(self.get_full_path().strip('/').encode()).hexdigest()
 
     def get_children(self):
         '''Gets children of a given node'''
@@ -80,6 +84,7 @@ class Content(Base):
         parent=self.get_parent()
         if parent == None:
             return ''
+        print(parent.as_dict())
         return parent.get_full_path()+'/'+self.name
 
     def get_parent(self):
@@ -87,7 +92,7 @@ class Content(Base):
         if self.parent_id==None:
             return None
         else:
-            return Content.query.get(self.parent_id)
+            return g.db_session.query(Content).get(self.parent_id)
 
     def get_globals(self):
         '''Gets globals to inject into context of jinja template on self.render() call'''
@@ -107,6 +112,7 @@ class Content(Base):
         new_node = Content(self.id, name, content_type_id, content_data_id)
         g.db_session.add(new_node)
         g.db_session.flush()
+        g.db_session.refresh(new_node)
         return new_node
 
     def check_circular(self, stack=[]):

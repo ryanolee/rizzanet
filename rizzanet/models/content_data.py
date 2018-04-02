@@ -46,6 +46,7 @@ class ContentData(Base):
             content_data = ContentData(name,data)
             g.db_session.add(content_data)
             g.db_session.flush()
+            g.db_session.refresh(content_data)
             return content_data
         else:
             return None

@@ -5,6 +5,7 @@ flask
 flask-assets
 flask-login
 flask-bootstrap
+flask-cors
 flask-wtf
 wtforms
 bcrypt

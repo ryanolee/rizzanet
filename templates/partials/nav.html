@@ -13,9 +13,10 @@
                     </div>
                 </li>
             {% else %}
-                <li class="nav-item">
+                <li class="nav-item clearfix">
                     <a href="{{item.data.link}}" class="nav-link active">{{item.data.label}}</a>
                 </li>
+                
             {% endif %}
         {% endfor %}
     </ul>

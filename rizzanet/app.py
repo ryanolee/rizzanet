@@ -12,7 +12,7 @@ import os
 
 def create_app(config=None):
     """creates the app"""
-    app = Flask('rizza_app',static_url_path='/compiled/',static_folder=os.path.dirname(__file__)+"/../static/", template_folder=os.path.dirname(__file__)+"/../templates/")
+    app = Flask('rizza_app',static_url_path='/static',static_folder=os.path.dirname(__file__)+"/../static/", template_folder=os.path.dirname(__file__)+"/../templates/")
     bind_converters_to_app(app)
     bind_bundles(app)
     Bootstrap(app)

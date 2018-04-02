@@ -73,15 +73,18 @@ def bind_cli_commands(app):
         root_node=Content(None,'root',article,data)
         g.db_session.add(root_node)
         g.db_session.commit()
-        root_node.add_child('nav',nav_bar)
+        root_node.add_child('nav',nav_bar).add_child('home',ContentData.create('nav_item',{
+            'label':'home',
+            'link':'/'
+        }))
         g.db_session.commit()
         click.secho('Done!',fg='white',bg='green')
         #destroy_app_context(ctx)
         
     @rizzanet_cli.command(help='Drops all tables from the database.')
-    def purge_db():
+    def drop_db():
         from rizzanet.db import Base,engine
-        from rizzanet.models import Content,ContentData,ContentType,User
+        from rizzanet.models import Content,ContentData,ContentType,User,APIKey
         click.secho("!!! WARNING Running this command will purge all data from the current database !!!",bg='red',blink=True)
         click.echo("Are you sure you wish to continue? [y/N]", nl=False)
         input_char = click.getchar()
@@ -95,6 +98,17 @@ def bind_cli_commands(app):
         else:
             click.echo("Database purge aborted. No changes made.")
     
-    
+    @rizzanet_cli.command(help='Creates an API key for rizzanet.')
+    @in_app_context
+    def create_api_key():
+        from rizzanet.models import APIKey
+        import secrets
+        key = secrets.token_urlsafe(64)
+        api_key = APIKey.create(key)
+        g.db_session.commit()
+        key = APIKey.to_base64('{0}__{1}'.format(api_key.id, key))
+        click.secho('Api key created! Take note of this secret as it will be non recoverable.',fg='white',bg='green')
+        click.secho(key,fg='white',bg='green')
+
     app.cli.add_command(rizzanet_cli)
             

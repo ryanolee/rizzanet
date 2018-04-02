@@ -49,6 +49,7 @@ class ContentType(Base):
         content_type = self(name,schema,view_path)
         g.db_session.add(content_type)
         g.db_session.flush()
+        g.db_session.refresh(content_type)
         return content_type
     
     @classmethod
