@@ -30,6 +30,24 @@ def bind_api_routes(app):
             return func(*args,**kwargs)
         return auth_wrap
 
+    def required_fields(func,*required_field_data):
+        '''Handles auth for Api'''
+        def arg_wrapper(func):
+            '''partial func so that decorator can be invoked'''
+            from functools import wraps
+            @wraps(func)
+            def required_wrap(*args,**kwargs):
+                from flask import request
+                to_return = []
+                for field in required_field_data:
+                    if request.values.get(field) == None:
+                        to_return.append("'"+field+"'")
+                if to_return != []:  
+                    return api_error('Error required field{0} {1} not set'.format('' if len(to_return)==1 else 's' ,','.join(to_return)),400)
+                return func(*args,**kwargs)
+            return required_wrap
+        return arg_wrapper
+        
     @app.route('/api/get/path', defaults={'path': ''})
     @app.route('/api/get/path/<path:path>',methods=['GET','FETCH'])
     @api_auth
@@ -79,14 +97,11 @@ def bind_api_routes(app):
 
     @app.route('/api/create/',methods=['GET','POST'])
     @api_auth
+    @required_fields('parent_id','name','content_type','content_data')
     def create_content_object():
         from flask import request
         from rizzanet.models import Content,ContentData
         import json
-        required_fields = ['parent_id','name','content_type','content_data']
-        for field in required_fields:
-            if request.values.get(field) == None:
-                return api_error('Error required field {0} not set'.format(field),400)
         parent_id = request.values.get('parent_id')
         parent = Content.get_by_id(parent_id)
         if parent == None:
@@ -104,20 +119,30 @@ def bind_api_routes(app):
         return handle_get_content_response(response) 
     
     def handle_get_content_response(response, as_dict=False):
-        content_data = response.get_content_data()
+        try:
+            parts = get_parts()
+        except Exception as error:
+            return api_error('Error: invalid parts format.',400)
         response_data = {
             'id':response.id,
             'remote_id':response.remote_id,
-            'name':response.name,
-            'content_type':content_data.get_datatype(),
-            'data':content_data.get_data()
+            'name':response.name
         }
+        if parts != False:
+            if any([ part in parts for part in ['all','content_data']]):
+                content_data = response.get_content_data()
+                response_data['data'] = content_data
+            if any([ part in parts for part in ['all','content_type']]):
+                from rizzanet.models import ContentType
+                response_data['content_type'] = ContentType.get_content_type_from_mixed(response.content_type_id)
         return response_data if as_dict else api_response(response_data)
+
     def api_error(error_message,code=500):
         return jsonify(
             code=code,
             error_message=error_message
         ), code
+
     def api_response(data,code=200):
         response_dict={'code':code,'result':data}
         return jsonify(**response_dict), code
@@ -131,5 +156,16 @@ def bind_api_routes(app):
             return api_error('Error: failed to make changes to db (error:{0}).'.format(error),500) 
         return False
 
-
+    def get_parts():
+        '''gets parts for content objects'''
+        from flask import request
+        valid_parts = ['content', 'content_data', 'content_type', 'all']
+        parts = request.values.get('parts')
+        if parts == None:
+            return False
+        parts = parts.split(',')
+        if len(parts) == 0 or not all([part in valid_parts for part in parts]):
+            raise Exception('Invalid format for parts')
+        else:
+            return parts
     
