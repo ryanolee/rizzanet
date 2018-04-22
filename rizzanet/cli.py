@@ -46,12 +46,13 @@ def bind_cli_commands(app):
         try:
             g.db_session.commit()
         except Exception as i_error:
-            click.secho("Command failed: %s " % i_error._message, err=True, bg='red')
+            click.secho("Command failed: %s " % i_error, err=True, bg='red')
             return        
         click.echo('Creating article content type.')
+        from rizzanet.fieldtypes import StringType,LinkType
         article=ContentType.create('article',{
-            'title':str,
-            'content':str
+            'title':StringType,
+            'content':StringType
         },'content_types/article.html')
         click.echo('Creating article content object.')
         data = ContentData.create('article',{
@@ -61,21 +62,23 @@ def bind_cli_commands(app):
         click.echo('creating nav item...')
 
         nav_item=ContentType.create('nav_item',{
-            'label':str,
-            'link':str
-        })
-
-        nav_bar = ContentData.create('nav_item',{
-            'label':'nav_root',
-            'link':'#'
+            'label':StringType,
+            'link':LinkType
         })
         click.echo('Creating content structure.')
         root_node=Content(None,'root',article,data)
         g.db_session.add(root_node)
+        
+        
+        
         g.db_session.commit()
+        nav_bar = ContentData.create('nav_item',{
+            'label':'nav_root',
+            'link':root_node.id
+        })
         root_node.add_child('nav',nav_bar).add_child('home',ContentData.create('nav_item',{
             'label':'home',
-            'link':'/'
+            'link':root_node.id
         }))
         g.db_session.commit()
         click.secho('Done!',fg='white',bg='green')

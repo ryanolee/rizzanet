@@ -1,4 +1,4 @@
-from sqlalchemy import Column,String,Integer,ForeignKey,PickleType
+from sqlalchemy import Column,String,Integer,ForeignKey,PickleType,exists
 from sqlalchemy.orm import relationship,backref
 from rizzanet.db import Base
 from flask import g
@@ -23,8 +23,9 @@ class ContentData(Base):
             data_type_id = self.get_datatype_id(),
             data = self.get_data()
         )
+        
     def get_data(self):
-        return self.data
+        return {key: value.get() for key,value in self.data.items()}
 
     def set_data(self, data):
         self.data = data
@@ -42,7 +43,10 @@ class ContentData(Base):
             name=name.name
         else:
             schema = ContentType.get_by_name(name)
+        types = schema.get_schema()
+        data = {key: types[key].create(data[key]) for key in data.keys()}
         if schema.verify(data):
+            #Create value objects from the related content types 
             content_data = ContentData(name,data)
             g.db_session.add(content_data)
             g.db_session.flush()
@@ -52,11 +56,15 @@ class ContentData(Base):
             return None
     
     @classmethod
-    def get_by_id(self, data_id):
+    def get_by_id(cls, data_id):
         try:
-            content_data = g.db_session.query(self).filter( self.id ==  data_id).one()
+            content_data = g.db_session.query(cls).filter( cls.id ==  data_id).one()
         except Exception as error:
             raise Exception('Error no content data found with id:{0} error: {1}'.format( data_id,error))
         return content_data
+    
+    @classmethod
+    def exsists(cls, data_id):
+        return g.db_session.query(exists().where(cls.id == data_id)).scalar()
             
         

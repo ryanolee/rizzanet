@@ -10,3 +10,5 @@ flask-wtf
 wtforms
 bcrypt
 blinker
+jsonpickle
+dotenv-python

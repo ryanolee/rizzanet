@@ -117,8 +117,13 @@ def bind_api_routes(app):
         if res != False:
             return res
         return handle_get_content_response(response) 
-    
-    def handle_get_content_response(response, as_dict=False):
+   
+    def handle_get_content_type_response(response, as_dict = False):
+        response_data = response.as_dict()
+        print(response_data)
+        return response_data if as_dict else api_response(response_data)
+
+    def handle_get_content_response(response, as_dict = False):
         try:
             parts = get_parts()
         except Exception as error:
@@ -131,10 +136,10 @@ def bind_api_routes(app):
         if parts != False:
             if any([ part in parts for part in ['all','content_data']]):
                 content_data = response.get_content_data()
-                response_data['data'] = content_data
+                response_data['content_data'] = content_data.as_dict()
             if any([ part in parts for part in ['all','content_type']]):
                 from rizzanet.models import ContentType
-                response_data['content_type'] = ContentType.get_content_type_from_mixed(response.content_type_id)
+                response_data['content_type'] = handle_get_content_type_response(ContentType.get_content_type_from_mixed(response.content_type_id),True)
         return response_data if as_dict else api_response(response_data)
 
     def api_error(error_message,code=500):

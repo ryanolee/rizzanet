@@ -1,4 +1,4 @@
-from sqlalchemy import Column,String,Integer,ForeignKey
+from sqlalchemy import Column,String,Integer,ForeignKey,exists
 from sqlalchemy.orm import relationship,backref
 from rizzanet.db import Base
 from .content_data import ContentData
@@ -152,5 +152,8 @@ class Content(Base):
     def get_by_id(self,id):
         '''Gets content by id'''
         return g.db_session.query(self).filter(self.id==id).first()
-            
+
+    @classmethod
+    def exsists(cls, content_id):
+        return g.db_session.query(exists().where(cls.id == content_id)).scalar()  
         
