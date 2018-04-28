@@ -1,0 +1,34 @@
+content_type:
+  article:
+    schema:
+      title: str
+      content: str
+    view_path: content_types/article.html
+  link_item:
+    schema:
+      title: str
+      content: str
+    
+content:
+  root:
+    name: 'root'
+    type: 'article'
+    data: 
+      title: 'This is a good article'
+      content: 'I too agree this is a good article'
+    children:
+      nav_root:
+        type: 'link_item'
+        data: 
+          label: 'home'
+          link: 1
+        chidren:
+          home:
+            type: 'link_item'
+          data: 
+            label: 'home'
+            link: 1
+
+    
+
+  

@@ -156,4 +156,11 @@ class Content(Base):
     @classmethod
     def exsists(cls, content_id):
         return g.db_session.query(exists().where(cls.id == content_id)).scalar()  
+    
+    @classmethod 
+    def create(cls,parent_id, name, content_type_id, content_data_id):
+        node=Content(parent_id, name, content_type_id, content_data_id)
+        g.db_session.add(node)
+        g.db_session.flush()
+        return node
         

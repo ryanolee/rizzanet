@@ -49,8 +49,12 @@ def bind_cli_commands(app):
             click.secho("Command failed: %s " % i_error, err=True, bg='red')
             return        
         click.echo('Creating article content type.')
-        from rizzanet.fieldtypes import StringType,LinkType
-        article=ContentType.create('article',{
+        from rizzanet.migrations import Migration
+        installer = Migration('install.yml',True)
+        installer.load()
+        installer.commit()
+        #from rizzanet.fieldtypes import StringType,LinkType
+        '''article=ContentType.create('article',{
             'title':StringType,
             'content':StringType
         },'content_types/article.html')
@@ -79,7 +83,7 @@ def bind_cli_commands(app):
         root_node.add_child('nav',nav_bar).add_child('home',ContentData.create('nav_item',{
             'label':'home',
             'link':root_node.id
-        }))
+        }))'''
         g.db_session.commit()
         click.secho('Done!',fg='white',bg='green')
         #destroy_app_context(ctx)

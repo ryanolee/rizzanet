@@ -1,7 +1,6 @@
 from .bundle import bind_js_bundles,bind_css_bundles,get_environment_from_app
 from flask import Flask,render_template
 from flask_bootstrap import Bootstrap
-from dotenv import load_dotenv
 from rizzanet.admin import bind_admin_routes
 from rizzanet.api import bind_api_routes
 from rizzanet.views import bind_jinja2_functions,register_routes

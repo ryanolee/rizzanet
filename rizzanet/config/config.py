@@ -1,11 +1,11 @@
 
 import os
-from dotenv import load_dotenv
+from dotenv import DotEnv
 
 env_path = os.path.dirname(__file__)+'/../.env'
 
 if os.path.exists(env_path):
-    load_dotenv(dotenv_path=env_path)
+    os.environ.update(DotEnv(env_path,'.env'))
 
 class BaseConfig:
     DEBUG=os.getenv('DEBUG',1)

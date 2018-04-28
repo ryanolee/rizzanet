@@ -26,11 +26,17 @@ class ValueObject():
         raise AttributeError("Neither {0!r} or {1!r} has method {2}".format(self._type, self.__class__, name))
     
     def __setstate__(self, data):
-        self.type = data['t']
+        from .alltype import CLASS_MAPPINGS
+        self.type = CLASS_MAPPINGS[data['t']]
         self._data = data['d']
     
     def __getstate__(self):
+        from .alltype import CLASS_MAPPINGS
+        for key, val in CLASS_MAPPINGS.items():
+            if val == self.type:
+                mapping = key
+
         return {
-            't':self.type,
+            't':mapping,
             'd':self._data
             }
