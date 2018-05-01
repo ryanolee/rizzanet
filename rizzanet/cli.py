@@ -51,7 +51,10 @@ def bind_cli_commands(app):
         click.echo('Creating article content type.')
         from rizzanet.migrations import Migration
         installer = Migration('install.yml',True)
-        installer.load()
+        try: installer.load()
+        except Exception as error:
+            click.secho("Command failed: {0!s}".format(error), err=True, bg='red')
+            return
         installer.commit()
         #from rizzanet.fieldtypes import StringType,LinkType
         '''article=ContentType.create('article',{
@@ -89,14 +92,19 @@ def bind_cli_commands(app):
         #destroy_app_context(ctx)
         
     @rizzanet_cli.command(help='Drops all tables from the database.')
-    def drop_db():
+    @click.option('-f','--force',help='Forces the command to execute without user confirmation.', is_flag=True)
+    def drop_db(force):
         from rizzanet.db import Base,engine
         from rizzanet.models import Content,ContentData,ContentType,User,APIKey
-        click.secho("!!! WARNING Running this command will purge all data from the current database !!!",bg='red',blink=True)
-        click.echo("Are you sure you wish to continue? [y/N]", nl=False)
-        input_char = click.getchar()
-        click.echo()
-        if input_char.decode().upper() == 'Y':
+        input_char = b''
+        if force:
+            click.echo("Force flag set. Dropping all tables...")
+        else:
+            click.secho("!!! WARNING Running this command will purge all data from the current database !!!",bg='red',blink=True)
+            click.echo("Are you sure you wish to continue? [y/N]", nl=False)
+            input_char = click.getchar()
+            click.echo()
+        if input_char.decode().upper() == 'Y' or force:
             click.secho("Purging database ...")
             for tbl in reversed(Base.metadata.sorted_tables):
                 click.echo('Dropping table %s ...' % tbl)

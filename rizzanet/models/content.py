@@ -159,7 +159,7 @@ class Content(Base):
     
     @classmethod 
     def create(cls,parent_id, name, content_type_id, content_data_id):
-        node=Content(parent_id, name, content_type_id, content_data_id)
+        node=Content(parent_id, name, ContentType.get_content_type_from_mixed(content_type_id).get_id(), content_data_id)
         g.db_session.add(node)
         g.db_session.flush()
         return node

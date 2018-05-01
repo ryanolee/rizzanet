@@ -8,13 +8,19 @@ class Migration:
 
     def load(self):
         from yaml import safe_load
+        from jsonschema import validate
+        from .migration_schema import MIGRATION_SCHEMA
         import os
         pathname = os.path.join(os.path.dirname(__file__),self.file)
         if self.verbose: print("Loading migration from {0} ...".format(pathname))
         if not os.path.exists(pathname):
             raise FileNotFoundError('Error file not found at point {0}'.format(pathname))
         with open(pathname,'r') as file:
-            self.state = safe_load(file) 
+           state = safe_load(file)
+        validate(state,MIGRATION_SCHEMA)
+        self.state = state
+        
+
     
     def commit(self):
         from rizzanet.models import Content,ContentData,ContentType
@@ -38,16 +44,16 @@ class Migration:
                         data['name'] if 'name' in data else name,
                         data['type'],
                         self.create_data_object(data['type'],data['data']))
-                    ,data
+                    ,data['children']
                 )
     '''For inturnal use only'''
     def build_content_struct(self ,root_node, data):
         if data == None:
             return
-        for key,value in data['children'].items():
+        for key,value in data.items():
             if self.verbose: print("Creating content node {0}".format(key))
             data_type = None if not 'type' in value else value['type']
-            node = root_node.add_child(key,self.create_data_object(data_type, data['data']), data_type)
+            node = root_node.add_child(key,self.create_data_object(data_type, value['data']), data_type)
             self.build_content_struct(node, value['children'] if 'children' in value else None)
         
     def create_data_object(self, datatype, data):
@@ -60,6 +66,7 @@ class Migration:
             return ContentData.get_by_id(self._id_mappings[data])
         else:
             if self.verbose: print('Creating content data with type {0}'.format(datatype))
+            print(data)
             return ContentData.create(datatype,data)
         
 

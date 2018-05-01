@@ -6,8 +6,8 @@ content_type:
     view_path: content_types/article.html
   link_item:
     schema:
-      title: str
-      content: str
+      label: str
+      link: lnk
     
 content:
   root:
@@ -17,17 +17,17 @@ content:
       title: 'This is a good article'
       content: 'I too agree this is a good article'
     children:
-      nav_root:
+      nav:
         type: 'link_item'
         data: 
           label: 'home'
           link: 1
-        chidren:
+        children:
           home:
             type: 'link_item'
-          data: 
-            label: 'home'
-            link: 1
+            data: 
+              label: 'home'
+              link: 1
 
     
 

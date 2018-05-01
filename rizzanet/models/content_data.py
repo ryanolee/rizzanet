@@ -44,7 +44,7 @@ class ContentData(Base):
         else:
             schema = ContentType.get_by_name(name)
         types = schema.get_schema()
-        data = {key: types[key].create(data[key]) for key in data.keys()}
+        data = {key: types[key].create(data[key] if key in data else None) for key in types.keys()}
         if schema.verify(data):
             #Create value objects from the related content types 
             content_data = ContentData(name,data)
