@@ -66,7 +66,6 @@ class Migration:
             return ContentData.get_by_id(self._id_mappings[data])
         else:
             if self.verbose: print('Creating content data with type {0}'.format(datatype))
-            print(data)
             return ContentData.create(datatype,data)
         
 

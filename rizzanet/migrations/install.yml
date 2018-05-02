@@ -17,6 +17,27 @@ content:
       title: 'This is a good article'
       content: 'I too agree this is a good article'
     children:
+      articles:
+        type: 'article'
+        data:
+          title: 'The index for a number of articles on this site'
+          content: 'Here are a few articles you may like...'
+        children:
+          article1:
+            type: 'article'
+            data:
+              title: 'A good article'
+              content: 'This is a good article'
+          article2:
+            type: 'article'
+            data:
+              title: 'A good article'
+              content: 'This is a good article'
+          article3:
+            type: 'article'
+            data:
+              title: 'A good article'
+              content: 'This is a good article'
       nav:
         type: 'link_item'
         data: 
