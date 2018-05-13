@@ -9,7 +9,6 @@ def register_routes(app):
     def load_location(path):
         '''Catch all that loads content locations last location registered'''
         from rizzanet.models import Content
-        print('match')
         response=Content.get_by_path(path)
         if response == None:
             return abort(404)

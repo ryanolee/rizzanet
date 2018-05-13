@@ -13,7 +13,7 @@ COPY . /app
 
 WORKDIR /app/rizzanet/admin/admin_app/
 RUN curl -sL  https://deb.nodesource.com/setup_9.x | bash - && apt-get install -y nodejs && curl -o- -L https://yarnpkg.com/install.sh | bash 
-RUN $HOME/.yarn/bin/yarn install --pure-lockfile && $HOME/.yarn/bin/yarn run build
+RUN $HOME/.yarn/bin/yarn install --pure-lockfile && $HOME/.yarn/bin/yarn build_rizzanet
 
 WORKDIR /app
 

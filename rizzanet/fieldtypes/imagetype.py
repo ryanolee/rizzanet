@@ -12,8 +12,7 @@ class ImageType(BaseType):
         try:
             Image.open(BytesIO(base64.b64decode(image_data)))
             return True
-        except Exception as error:
-            print(error)
+        except Exception:
             return False
     
     @staticmethod 

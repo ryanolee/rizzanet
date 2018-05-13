@@ -120,7 +120,6 @@ def bind_api_routes(app):
    
     def handle_get_content_type_response(response, as_dict = False):
         response_data = response.as_dict()
-        print(response_data)
         return response_data if as_dict else api_response(response_data)
 
     def handle_get_content_response(response, as_dict = False):

@@ -33,7 +33,6 @@ class Content(Base):
             self.content_type_id  = content_type_id
         self.name = name
         self.remote_id = ''
-        print('Full path:'+self.get_full_path())
         self.remote_id = self.get_remote_id()
 
     def __repr__(self):
@@ -84,7 +83,6 @@ class Content(Base):
         parent=self.get_parent()
         if parent == None:
             return ''
-        print(parent.as_dict())
         return parent.get_full_path()+'/'+self.name
 
     def get_parent(self):

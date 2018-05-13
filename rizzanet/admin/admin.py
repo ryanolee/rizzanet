@@ -9,7 +9,6 @@ def bind_admin_routes(app):
     @app.route('/admin/<path:path>',methods=['GET'])
     @redirect_login_reqired
     def admin(path):
-        print('from os dir')
         if path == "":
             return send_from_directory( 'rizzanet/admin/admin_app/build/', 'index.html')
         elif os.path.exists('rizzanet/admin/admin_app/build/' + path):

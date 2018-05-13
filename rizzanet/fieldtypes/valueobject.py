@@ -40,3 +40,29 @@ class ValueObject():
             't':mapping,
             'd':self._data
             }
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, key):
+        if not self.is_list_type():
+            raise TypeError('{0!r} is not subscriptable')
+        return self._data[key]
+    
+    def __setitem__(self, key, value):
+        if not self.is_list_type():
+            raise TypeError('{0!r} is not subscriptable')
+        if not self.type.verify_item(value):
+            raise TypeError('{0!r} is not a valid item of self {1!r}'.format(value, self.type))
+        self._data[key] = self.type.set_item(value)
+    
+    def __iter__(self):
+        try: iter(self._data)
+        except: raise TypeError("{0!r} is not iterable".format(self.type))
+        if self.is_list_type():
+            return (self.type.get_item(item) for item in self._data)
+        return self._data
+    
+    def is_list_type(self):
+        from .baselisttype import BaseListType
+        return issubclass(self.type, BaseListType)
