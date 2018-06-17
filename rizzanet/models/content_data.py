@@ -66,5 +66,12 @@ class ContentData(Base):
     @classmethod
     def exsists(cls, data_id):
         return g.db_session.query(exists().where(cls.id == data_id)).scalar()
+    
+    @classmethod
+    def all(cls, content_type, batch=10):
+        '''Returns a genarator that iterates through all instances of this type'''
+        import math
+        content_type = ContentType.get_content_type_from_mixed(content_type)
+        return (g.db_session.query(cls).filter(cls.datatype_id == content_type.id).limit(batch).offset(batch*x) for x in range(0,math.ceil(g.db_session.query(cls).count()/batch)))
             
         

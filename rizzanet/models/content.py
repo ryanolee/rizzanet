@@ -1,6 +1,7 @@
 from sqlalchemy import Column,String,Integer,ForeignKey,exists
 from sqlalchemy.orm import relationship,backref
 from rizzanet.db import Base
+from rizzanet.events import eventpool
 from .content_data import ContentData
 from .content_type import ContentType
 from hashlib import md5
@@ -111,6 +112,7 @@ class Content(Base):
         g.db_session.add(new_node)
         g.db_session.flush()
         g.db_session.refresh(new_node)
+        eventpool.dispatchEvent('CREATE_NODE', new_node)
         return new_node
 
     def check_circular(self, stack=[]):
@@ -160,5 +162,12 @@ class Content(Base):
         node=Content(parent_id, name, ContentType.get_content_type_from_mixed(content_type_id).get_id(), content_data_id)
         g.db_session.add(node)
         g.db_session.flush()
+        eventpool.dispatchEvent('CREATE_NODE', node)
         return node
+
+    @classmethod
+    def all(cls, batch=10):
+        '''Returns a genarator that iterates through all instances of this type'''
+        import math
+        return (g.db_session.query(cls).limit(batch).offset(batch*x) for x in range(0,math.ceil(g.db_session.query(cls).count()/batch)))
         

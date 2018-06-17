@@ -29,7 +29,6 @@ class ContentType(Base):
         )
 
     def verify(self,data):
-        from rizzanet.fieldtypes import BaseType
         for name,datatype in self.schema.items():
             if not name in data.keys():
                 print('Error: verification for item {0} failed due to {1} not being present in passed data.'.format(self.name,name))
@@ -65,7 +64,17 @@ class ContentType(Base):
     
     @classmethod
     def get_content_type_from_mixed(cls, content_type):
-        '''gets a content type from a mixed value'''
+        '''gets a content type from a mixed value
+        Args:
+            content_type (mixed): Retrievs a content type from a mixed value
+                Case: string -> Gets content type from name
+                Case: ContentType -> Returns passed content type
+                Case: ContentData -> Returns associated content type
+                Case: Int -> Int assumed to be ID and returns content type by ID
+                Default: Returns None
+        Returns:
+            ContentType
+        '''
         from .content_data import ContentData
         if isinstance(content_type,str):
             return ContentType.get_by_name(content_type)
@@ -97,3 +106,9 @@ class ContentType(Base):
     @classmethod
     def exsists(cls, type_id):
         return g.db_session.query(exists().where(cls.id == type_id)).scalar()
+
+    @classmethod
+    def all(cls, batch=10):
+        '''Returns a genarator that iterates through all instances of this type'''
+        import math
+        return (g.db_session.query(cls).limit(batch).offset(batch*x) for x in range(0,math.ceil(g.db_session.query(cls).count()/batch)))
