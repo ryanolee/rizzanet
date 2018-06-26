@@ -90,7 +90,16 @@ def bind_cli_commands(app):
         g.db_session.commit()
         click.secho('Done!',fg='white',bg='green')
         #destroy_app_context(ctx)
-        
+    
+    @rizzanet_cli.command(help='Creates database schema.')
+    @in_app_context
+    def create_schema():
+        from rizzanet.models import User,Content,ContentType,ContentData
+        from rizzanet.db import Base,engine
+        click.echo('Building database schema...')
+        Base.metadata.create_all(bind=engine)
+        click.secho('Done!',fg='white',bg='green')
+
     @rizzanet_cli.command(help='Drops all tables from the database.')
     @click.option('-f','--force',help='Forces the command to execute without user confirmation.', is_flag=True)
     def drop_db(force):
@@ -124,6 +133,34 @@ def bind_cli_commands(app):
         key = APIKey.to_base64('{0}__{1}'.format(api_key.id, key))
         click.secho('Api key created! Take note of this secret as it will be non recoverable.',fg='white',bg='green')
         click.secho(key,fg='white',bg='green')
+
+    @rizzanet_cli.command(help='Reindexes elastic search for rizzanet.')
+    @in_app_context
+    def reindex_elasticsearch():
+        from rizzanet.elasticsearch import ContentES,ContentDataES,getConnectionFromApp
+        from elasticsearch import Elasticsearch
+        import requests
+        import logging
+
+        # These two lines enable debugging at httplib level (requests->urllib3->http.client)
+        # You will see the REQUEST, including HEADERS and DATA, and RESPONSE with HEADERS but without DATA.
+        # The only thing missing will be the response.body which is not logged.
+        try:
+            import http.client as http_client
+        except ImportError:
+            # Python 2
+            import httplib as http_client
+        http_client.HTTPConnection.debuglevel = 1
+
+        # You must initialize logging, otherwise you'll not see debug output.
+        logging.basicConfig()
+        logging.getLogger().setLevel(logging.DEBUG)
+        requests_log = logging.getLogger("requests.packages.urllib3")
+        requests_log.setLevel(logging.DEBUG)
+        requests_log.propagate = True
+        conn = getConnectionFromApp(app)
+        ContentES(conn).reindex() 
+        ContentDataES(conn).reindex()
 
     app.cli.add_command(rizzanet_cli)
             

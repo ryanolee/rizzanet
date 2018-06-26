@@ -14,3 +14,11 @@ class BaseES:
             conn (Elasticsearch): The connection this instance of the content class will use
         """
         self.es=conn
+    
+    def dropIndex(self):
+        '''Drops entire index for elastic search use with caution!'''
+        self.es.indices.delete(index=self.INDEX_NAME, ignore=[400, 404])
+        return self
+    
+    def createIndex(self):
+        self.es.indices.create(index=self.INDEX_NAME)

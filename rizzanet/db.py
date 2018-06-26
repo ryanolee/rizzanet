@@ -8,7 +8,7 @@ Base = declarative_base()
 
 def bind_app_events(app):
     global engine
-    engine = create_engine('sqlite:///./database/rizza.db', convert_unicode=True, poolclass=NullPool)#echo=True
+    engine = create_engine('sqlite:///./database/rizza.db', convert_unicode=True, poolclass=NullPool)# echo=True
     sessioncreate = sessionmaker(autocommit=False,
                                             autoflush=False,
                                             bind=engine)

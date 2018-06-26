@@ -10,18 +10,36 @@ class GlobalEventPool:
             raise Exception('Invalid format for events pool')
         self.events = eventsPool
 
-    '''Attach a new event listener to the event pool'''
+    
     def attachEventListener(self, name, callback):
+        '''Attach a new event listener to the event pool'''
         if not callable(callback):
             raise TypeError('Error callback for event {0!s} given as type {1!s}. Expecting callable'.format(name ,type(callback)))
         if not name in self.events.keys():
             self.events[name] = []
         self.events[name].append(callback)
+        print(self.events)
     
-    '''Dispatch a new event from the event pool'''
+    
     def dispatchEvent(self, name, *args, **kwargs):
+        '''Dispatch a new event from the event pool'''
+        print('Dispatching event'+ name, *args)
+        print(self.events)
         if name in self.events.keys():
             return [event(*args, **kwargs) for event in self.events[name]]
         return []
-global eventpool
+
 eventpool = GlobalEventPool()
+def getEventPool():
+    global eventpool
+    return eventpool
+
+def attachEventListener(name, callback):
+    '''Attach a new event listener to the event pool'''
+    global eventpool
+    eventpool.attachEventListener(name, callback)
+
+def dispatchEvent(name, *args, **kwargs):
+    '''Dispatch a new event from the event pool'''
+    global eventpool
+    return eventpool.dispatchEvent(name, *args, **kwargs)

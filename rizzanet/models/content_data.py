@@ -16,6 +16,9 @@ class ContentData(Base):
         self.data = data
         self.datatype_id = ContentType.get_content_type_from_mixed(datatype).get_id()
     
+    def __repr__(self):
+        return '<ContentData({0})>'.format(','.join(['{0!s}:{1!r}'.format(key, obj) for key, obj in self.as_dict().items()]))
+    
     def as_dict(self):
         return dict(
             id = self.id,
@@ -23,12 +26,15 @@ class ContentData(Base):
             data_type_id = self.get_datatype_id(),
             data = self.get_data()
         )
-        
+     
     def get_data(self):
         return {key: value.get() for key,value in self.data.items()}
 
     def set_data(self, data):
         self.data = data
+    
+    def get_data_dict(self):
+        return self.data
 
     def get_datatype(self):
         return self.datatype
@@ -72,6 +78,8 @@ class ContentData(Base):
         '''Returns a genarator that iterates through all instances of this type'''
         import math
         content_type = ContentType.get_content_type_from_mixed(content_type)
-        return (g.db_session.query(cls).filter(cls.datatype_id == content_type.id).limit(batch).offset(batch*x) for x in range(0,math.ceil(g.db_session.query(cls).count()/batch)))
+        for content_data_list in (g.db_session.query(cls).filter(cls.datatype_id == content_type.id).limit(batch).offset(batch*x).all() for x in range(0,math.ceil(g.db_session.query(cls).count()/batch))):
+            for content_data in content_data_list:
+                yield content_data
             
         

@@ -46,7 +46,7 @@ class Migration:
                         self.create_data_object(data['type'],data['data']))
                     ,data['children']
                 )
-    '''For inturnal use only'''
+    '''For internal use only'''
     def build_content_struct(self ,root_node, data):
         if data == None:
             return

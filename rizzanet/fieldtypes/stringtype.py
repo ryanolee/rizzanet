@@ -7,4 +7,8 @@ class StringType(BaseType):
     def verify(cls, instance):
         return isinstance(instance,str)
 
+    @classmethod
+    def get_es_mapping(cls):
+        return {'type': 'text', 'analyzer': 'english'}
+
     

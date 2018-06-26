@@ -1,5 +1,6 @@
 from sqlalchemy import Column,String,Integer,ForeignKey,PickleType,exists
 from sqlalchemy.orm import relationship,backref
+from rizzanet.events import dispatchEvent
 from rizzanet.db import Base
 from flask import g
 
@@ -60,6 +61,7 @@ class ContentType(Base):
         g.db_session.add(content_type)
         g.db_session.flush()
         g.db_session.refresh(content_type)
+        dispatchEvent('CREATE_CONTENT_TYPE', content_type)
         return content_type
     
     @classmethod
@@ -111,4 +113,6 @@ class ContentType(Base):
     def all(cls, batch=10):
         '''Returns a genarator that iterates through all instances of this type'''
         import math
-        return (g.db_session.query(cls).limit(batch).offset(batch*x) for x in range(0,math.ceil(g.db_session.query(cls).count()/batch)))
+        for content_type_list in (g.db_session.query(cls).limit(batch).offset(batch*x).all() for x in range(0,math.ceil(g.db_session.query(cls).count()/batch))):
+            for content_type in content_type_list:
+                    yield content_type

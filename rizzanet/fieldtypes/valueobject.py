@@ -17,6 +17,9 @@ class ValueObject():
     def get(self):
         return self.type.get(self._data)
     
+    def get_es_value(self):
+        return self.type.get_es_value(self._data)
+    
     def __getattr__(self, name):
         if name in dir(self):
             return getattr(self, name)
@@ -62,6 +65,9 @@ class ValueObject():
         if self.is_list_type():
             return (self.type.get_item(item) for item in self._data)
         return self._data
+    
+    def __repr__(self):
+        return "<ValueObject({0})>".format(self.get())
     
     def is_list_type(self):
         from .baselisttype import BaseListType

@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod, abstractproperty, abstractclassmethod
 
 class BaseType(metaclass=ABCMeta):
     '''Base type for all type classes'''
@@ -13,6 +13,13 @@ class BaseType(metaclass=ABCMeta):
     def verify(self, instance):
         '''verify the instance of a type'''
         pass
+    
+    @abstractclassmethod
+    def get_es_mapping(cls):
+        '''Gets the elastic search mapping for a given type in the form of a field'''
+        pass
+
+    
     
     @classmethod
     def get_type_name(cls):
@@ -41,4 +48,14 @@ class BaseType(metaclass=ABCMeta):
     def get(data):
         '''method that retrieves data for a given type '''
         return data 
+    
+    @staticmethod
+    def get_es_value(data):
+        '''Method that gets the data to be stored in elastic search for a given type'''
+        return data
+    
+    @classmethod
+    def get_es_value(cls, data):
+        '''Alias of the get method. Passes a value to elastic search that can later be loaded ''' 
+        return cls.get(data)
             
