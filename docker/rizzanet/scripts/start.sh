@@ -12,5 +12,4 @@ else
 fi
 
 # Start Supervisor, with Nginx and uWSGI
-exec service elasticsearch start
 exec /usr/bin/supervisord

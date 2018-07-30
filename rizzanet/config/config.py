@@ -20,6 +20,7 @@ class BaseConfig:
     DB_PATH = os.getenv('DB_PATH','')
 
     ES_CONFIG = [{
-        'host': 'localhost',
-        'port': 9200
+        'host': os.getenv('ES_HOST','localhost'),
+        'port': os.getenv('ES_PORT', 9200)
     }]
+
