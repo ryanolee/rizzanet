@@ -18,13 +18,11 @@ class GlobalEventPool:
         if not name in self.events.keys():
             self.events[name] = []
         self.events[name].append(callback)
-        print(self.events)
+
     
     
     def dispatchEvent(self, name, *args, **kwargs):
         '''Dispatch a new event from the event pool'''
-        print('Dispatching event'+ name, *args)
-        print(self.events)
         if name in self.events.keys():
             return [event(*args, **kwargs) for event in self.events[name]]
         return []

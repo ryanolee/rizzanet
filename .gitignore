@@ -1,6 +1,7 @@
 *.pyc
 *.pyo
 .vscode
+.DS_store
 /database/*
 /static/compiled/*
 /static/.webassets-cache/*

@@ -19,7 +19,10 @@ class BaseType(metaclass=ABCMeta):
         '''Gets the elastic search mapping for a given type in the form of a field'''
         pass
 
-    
+    @abstractclassmethod
+    def convert(cls, data):
+        '''Attempts a conversion on a instance of a type before validation'''
+        return data
     
     @classmethod
     def get_type_name(cls):

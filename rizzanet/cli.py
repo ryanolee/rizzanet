@@ -143,5 +143,6 @@ def bind_cli_commands(app):
         ContentES(conn).reindex() 
         ContentDataES(conn).reindex()
 
+
     app.cli.add_command(rizzanet_cli)
             

@@ -20,7 +20,7 @@ RUN $HOME/.yarn/bin/yarn install --pure-lockfile && $HOME/.yarn/bin/yarn build_r
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt 
+RUN pip install --upgrade pip && pip install -r requirements.txt 
 ENV PYTHONPATH=/app
 
 COPY docker/rizzanet/scripts/start.sh /start.sh

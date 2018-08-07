@@ -5,6 +5,7 @@ class ValueObject():
         from .basetype import BaseType 
         if not issubclass(TypeClass,BaseType):
             raise TypeError('Class {0} does not inherit from BaseType'.format(TypeClass))
+        data = TypeClass.convert(data)
         if not TypeClass.verify(data):
             raise ValueError('Cannot instanchiate value object supplied data is invalid. Type: {0} Value: {1}'.format(TypeClass, data))
         self.type = TypeClass

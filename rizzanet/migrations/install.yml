@@ -8,7 +8,15 @@ content_type:
     schema:
       label: str
       link: lnk
-    
+
+content_data:
+  article1:
+    type: 'article'
+    data:  
+      title: 'A good article'
+      content: 'This is a good article'
+
+
 content:
   root:
     name: 'root'
@@ -19,21 +27,25 @@ content:
     children:
       articles:
         type: 'article'
+        label: 'article_index'
         data:
           title: 'The index for a number of articles on this site'
           content: 'Here are a few articles you may like...'
         children:
           article1:
+            label: 'article1'
             type: 'article'
             data:
               title: 'A good article'
               content: 'This is a good article'
           article2:
+            label: 'article2'
             type: 'article'
             data:
               title: 'A good article'
               content: 'This is a good article'
           article3:
+            label: 'article3'
             type: 'article'
             data:
               title: 'A good article'
@@ -48,8 +60,21 @@ content:
             type: 'link_item'
             data: 
               label: 'home'
-              link: 1
-
-    
-
+              link: '${article_index.id}'
+            children:
+              article1:
+                type: 'link_item'
+                data: 
+                  label: 'article 1'
+                  link: '${article1.id}'
+              article2:
+                type: 'link_item'
+                data: 
+                  label: 'article 2'
+                  link: '${article2.id}'
+              article3:
+                type: 'link_item'
+                data: 
+                  label: 'article 3'
+                  link: '${article3.id}'
   

@@ -18,6 +18,7 @@ class ContentTypeES(BaseES):
             }
         }
         self.es.indices.create(index = self.INDEX_NAME+content_type.get_name(), body = mapping, ignore=[400, 404])
+
     def createIndexes(self):
         for content_type in ContentType.all():
             self.createIndexFromType(content_type)

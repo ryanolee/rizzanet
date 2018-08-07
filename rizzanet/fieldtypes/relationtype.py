@@ -17,6 +17,12 @@ class RelationType(BaseType):
     def get_es_mapping(cls):
         return {'type': 'integer'}
     
+    @classmethod
+    def convert(cls, data):
+        if isinstance(data, str):
+            try: return int(data)
+            except ValueError: return data
+        return data
     @staticmethod
     def get_es_value(data):
         return data
