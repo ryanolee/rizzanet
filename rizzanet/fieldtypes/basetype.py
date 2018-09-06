@@ -53,10 +53,10 @@ class BaseType(metaclass=ABCMeta):
         return data 
     
     @staticmethod
-    def get_es_value(data):
-        '''Method that gets the data to be stored in elastic search for a given type'''
+    def after_validation_convert(data):
+        '''Applies a conversion step after the data has been verified as valid'''
         return data
-    
+
     @classmethod
     def get_es_value(cls, data):
         '''Alias of the get method. Passes a value to elastic search that can later be loaded ''' 

@@ -3,6 +3,7 @@ version: '3'
 services:
   web:
     container_name: 'rizzanet-web'
+    image: 'ryanolee/rizzanet:dev'
     build: .
     ports:
      - "80:8080"

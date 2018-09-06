@@ -51,6 +51,7 @@ MIGRATION_SCHEMA = {
                     "data": {
                         "oneOf": [
                             {"type":"integer","minimum":0},
+                            {"type":"string","minimum":0},
                             {"$ref": "#/properties/content_data/properties/data"}
                         ]
                     },

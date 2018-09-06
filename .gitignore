@@ -4,4 +4,6 @@
 .DS_store
 /database/*
 /static/compiled/*
+/static/images/*
+!/static/images/.keepfile
 /static/.webassets-cache/*

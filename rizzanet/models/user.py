@@ -1,4 +1,4 @@
-from sqlalchemy import Column,String,Integer
+from sqlalchemy import Column,String,Integer,Binary
 from rizzanet.db import Base
 from flask_login import UserMixin
 import bcrypt
@@ -9,7 +9,7 @@ class User(Base,UserMixin):
     name = Column(String)
     username = Column(String, unique=True)
     role=Column(Integer)
-    _password = Column(String)
+    _password = Column(Binary)
     def __init__(self,name,username,password,role):
         self.name = name
         self.username = username
@@ -18,4 +18,4 @@ class User(Base,UserMixin):
     def __repr__(self):
         return '<User(id:%r,name:%r,username:%r,password:-,role:%r)>' % self.id,self.name,self.username,self.role
     def auth(self,password):
-        return bcrypt.checkpw(password.encode(),self._password)
+        return bcrypt.checkpw(password.encode(), self._password)

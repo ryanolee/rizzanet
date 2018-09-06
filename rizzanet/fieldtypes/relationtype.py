@@ -23,14 +23,15 @@ class RelationType(BaseType):
             try: return int(data)
             except ValueError: return data
         return data
+    
     @staticmethod
     def get_es_value(data):
         return data
 
     @staticmethod
-    def get(data):
+    def get(content_object_id):
         from rizzanet.models import Content
-        return Content.get_by_id(data)
+        return Content.get_by_id(content_object_id)
 
     
         

@@ -20,7 +20,7 @@ def get_database_url(app):
 def bind_app_events(app):
     global engine
     
-    engine = create_engine(get_database_url(app), convert_unicode=True, poolclass=NullPool, echo=True)
+    engine = create_engine(get_database_url(app), convert_unicode=True, poolclass=NullPool)
     sessioncreate = sessionmaker(autocommit=False,
                                             autoflush=False,
                                             bind=engine)

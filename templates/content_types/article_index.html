@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    {{ content }}
+    
+    {% for article in articles %}
+        <hr/>
+        {{ article.get_main_node() }}
+        <a href='{{ article.get_main_node().path }}'>
+            <h2>
+                {{article.data.title.get()}}
+            </h2>
+        </a>
+        {{ article.data.content.get()|truncate(200)}}
+    {% endfor %}
+{% endblock %}

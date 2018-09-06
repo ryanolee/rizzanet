@@ -8,6 +8,19 @@ class ContentDataES(BaseES):
 
     INDEX_NAME = None
 
+    def addToIndex(self, content_data):
+        
+        from rizzanet.models import ContentData
+        from .content_type_es import ContentTypeES
+        if not isinstance(content_data, ContentData):
+            raise ValueError('Error: unable to index content data.{0!r} is not a instance of the ContentData class.'.format(content_data))
+        self.es.index(
+            index = ContentTypeES.INDEX_NAME+content_data.get_datatype(),
+            doc_type = content_data.get_datatype(), 
+            id = content_data.id, 
+            body = {key: value.get_es_value() for key, value in content_data.get_data_dict().items()},
+            ignore = [404, 401])
+
     def reindex(self):
         from rizzanet.models import ContentData, ContentType
         from .content_type_es import ContentTypeES

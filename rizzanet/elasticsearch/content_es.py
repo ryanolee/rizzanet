@@ -12,6 +12,8 @@ class ContentES(BaseES):
                 'id': {'type': 'integer'},
                 'parent_id': {'type': 'integer'},
                 'name': {'type':'text', 'analyzer': 'english'},
+                'path': {'type':'text', 'analyzer': 'english'},
+                'main_node': {'type': 'boolean'},
                 'remote_id': {'type':'keyword'},
                 'content_type_id': {'type': 'integer'},
                 'content_data_id': {'type': 'integer'}

@@ -10,7 +10,8 @@ class LinkType(RelationType):
     
     @staticmethod
     def get(data):
-        return RelationType.get(data).get_full_path()
+        print(RelationType.get(data).get_path())
+        return RelationType.get(data).get_path()
     
     @classmethod
     def get_es_mapping(cls):

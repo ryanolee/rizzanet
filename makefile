@@ -21,5 +21,17 @@ reinstall: start
 install: start
 	docker exec rizzanet-web bash --login -c "cd /app/ && flask rizzanet install"
 
+reindex: start
+	docker exec rizzanet-web bash --login -c "cd /app/ && flask rizzanet reindex_elasticsearch"
+
 up: start
 down: stop
+
+dev: start
+	docker exec rizzanet-web bash --login -c "cd /app/ && flask rizzanet reindex_elasticsearch"
+
+log:
+	docker-compose up
+
+build:
+	docker-compose build

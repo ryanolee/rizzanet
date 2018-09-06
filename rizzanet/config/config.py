@@ -7,6 +7,7 @@ env_path = os.path.dirname(__file__)+'/../../.env'
 if os.path.exists(env_path):
     os.environ.update(DotEnv(env_path).all())
 
+
 class BaseConfig:
     DEBUG=os.getenv('DEBUG',1)
     SECRET=os.getenv('SECRET',1)
@@ -22,4 +23,29 @@ class BaseConfig:
         'host': os.getenv('ES_HOST','localhost'),
         'port': os.getenv('ES_PORT', 9200)
     }]
+
+    IMAGES = {
+        'PATH': '/images',
+        'ALLOWED_FORMATS': ['webp','png','gif','jpg'],
+        'FORCE_CONVERT': False,
+        'AUTO_DUMP_IMAGES': True,
+        'DEFAULT_ALIAS': 'normal',
+        'DEFAULT_FORMAT': 'png',
+        'ALIASES': {
+            'normal': [{
+                
+            }],
+            'icon': [{
+                'filter': 'resize',
+                'args': {
+                    'size':(800,800)
+                }
+            },{
+                'filter': 'rotate',
+                'args':{
+                    'angle': 90
+                }
+            }]
+        }
+    }
 

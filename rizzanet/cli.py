@@ -94,7 +94,6 @@ def bind_cli_commands(app):
     @rizzanet_cli.command(help='Creates database schema.')
     @in_app_context
     def create_schema():
-        from rizzanet.models import User,Content,ContentType,ContentData
         from rizzanet.db import Base,engine
         click.echo('Building database schema...')
         Base.metadata.create_all(bind=engine)
@@ -104,7 +103,7 @@ def bind_cli_commands(app):
     @click.option('-f','--force',help='Forces the command to execute without user confirmation.', is_flag=True)
     def drop_db(force):
         from rizzanet.db import Base,engine
-        from rizzanet.models import Content,ContentData,ContentType,User,APIKey
+        from rizzanet.models import Content,ContentData,ContentType,User,APIKey,ImageData
         input_char = b''
         if force:
             click.echo("Force flag set. Dropping all tables...")
@@ -143,6 +142,15 @@ def bind_cli_commands(app):
         ContentES(conn).reindex() 
         ContentDataES(conn).reindex()
 
+    @rizzanet_cli.command(help='Dumps all from the database images into the static directory')
+    @click.option('-v','--verbose',help='Set verbose mode.', is_flag=True)
+    @in_app_context
+    def dump_images(verbose):
+        from rizzanet.helpers import ImageHelper
+        ih = ImageHelper(app)
+        ih.set_verbose(verbose)
+        ih.dump_images()
+        
 
     app.cli.add_command(rizzanet_cli)
             

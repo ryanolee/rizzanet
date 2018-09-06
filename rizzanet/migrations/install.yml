@@ -4,18 +4,37 @@ content_type:
       title: str
       content: str
     view_path: content_types/article.html
+  article_folder:
+    schema:
+      articles: crells
+      title: str
+      content: str
+    view_path: content_types/article_index.html
   link_item:
     schema:
       label: str
       link: lnk
-
+  image:
+    schema:
+      image: img
+    view_path: content_types/image.html
+  
 content_data:
   article1:
     type: 'article'
     data:  
       title: 'A good article'
       content: 'This is a good article'
-
+  article2:
+    type: 'article'
+    data:  
+      title: 'A good article'
+      content: 'This is a good article'
+  article3:
+    type: 'article'
+    data:  
+      title: 'A good article'
+      content: 'This is a good article'
 
 content:
   root:
@@ -26,30 +45,33 @@ content:
       content: 'I too agree this is a good article'
     children:
       articles:
-        type: 'article'
+        type: 'article_folder'
         label: 'article_index'
         data:
           title: 'The index for a number of articles on this site'
           content: 'Here are a few articles you may like...'
+          articles:
+            - '${article1.id}'
+            - '${article2.id}'
+            - '${article3.id}'
         children:
           article1:
-            label: 'article1'
+            label: 'article1_node'
             type: 'article'
-            data:
-              title: 'A good article'
-              content: 'This is a good article'
+            data: '${article1}'
           article2:
-            label: 'article2'
+            label: 'article2_node'
             type: 'article'
-            data:
-              title: 'A good article'
-              content: 'This is a good article'
+            data: '${article2}'
           article3:
-            label: 'article3'
+            label: 'article3_node'
             type: 'article'
-            data:
-              title: 'A good article'
-              content: 'This is a good article'
+            data: '${article3}'
+            children:
+              test:
+                type: 'image'
+                data: 
+                  image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAp1JREFUeNqEU21IU1EYfu7unW5Ty6aBszYs6MeUjGVYokHYyH5E1B9rZWFEFPQnAwmy6Hc/oqhfJsRKSSZGH1JIIX3MNCsqLTD9o1Oj6ebnnDfvvefezrnbdCHhCw/n433P8z7nPe/hBEEAtX0U7hc164uwuvVSXKwZLoOmaRDim+7m9vZa0WiEKSUFFpNpCWlmMyypqTDRuYn6t3k8vmQ2gRDCxs0t9fW45F52aBTROJLtZl7nEZad2m+KtoQCQ0FBARyOCGRZ/q92I1WgqqXlfdd95VsrK8/pChIEqqpCkiQsiCII0aBQZZoWl8lzFDwsFjMl0DBLY8Lj41hBwK4jSQrWOIphL6xYyhwJDWGo6wFSaH1Y3PTCAsITE1oyAa8flhWkbSiCLX8vun11eiGIpiJ/z2nYdx5HqLdVV7elrOzsuqysL3rmBIGiKPizKCHHWY4PLVeQbnXAdegqdhy+hu8dDTBnbqQJZJ1A7u+vz7RaiymWCZgCRSF6Edk8b9cx+B/W6WuVxPaZnyiqXoPpyUmVYvkKTIFClHigEieKjYuSvETUllaF4GAUM1NT6ooaJDKx+aDfC9fByxj90REb+9ppmIoAscH/6leg8MS9DJXPAM9xHCM443K57C6biMjcHDaVVCHw9RmCA2/RGC5C00AqXk/m4p20HZK4CM/J3Zk9n0ecMBhDQnJHcrTisyMfdQXOilrdMfxcwoHq/fg5R59TiQV3hYGKo6X2J/c7LyQIjOx9GXhOw/zoJ8wEevRGyp53o/lGMNYsBgPtEwLecwov7/jGDKa1twT6o3KpL4MdZgGsWZLtfPr7f1q58k1JNHy7YYaM+J+K3Y2PmAIbRavX66229hrGVvvL5uzsHDEUvUu+NT1my78CDAAMK1a8/QaZCgAAAABJRU5ErkJggg==q'
       nav:
         type: 'link_item'
         data: 
@@ -66,15 +88,14 @@ content:
                 type: 'link_item'
                 data: 
                   label: 'article 1'
-                  link: '${article1.id}'
+                  link: '${article1_node.id}'
               article2:
                 type: 'link_item'
                 data: 
                   label: 'article 2'
-                  link: '${article2.id}'
+                  link: '${article2_node.id}'
               article3:
                 type: 'link_item'
                 data: 
                   label: 'article 3'
-                  link: '${article3.id}'
-  
+                  link: '${article3_node.id}'

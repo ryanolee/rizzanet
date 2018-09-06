@@ -47,6 +47,10 @@ def bind_jinja2_functions(app):
         def get_path(path):
             from rizzanet.models import Content
             return Content.get_by_path(path)
+        
+        def get_image_url(image, alias=None):
+            from rizzanet.helpers import ImageHelper
+            return ImageHelper(app).get_image_uri(image, alias)
 
         return dict(
             get_content = get_content_by_id,
@@ -54,6 +58,7 @@ def bind_jinja2_functions(app):
             get_content_type = get_content_type_by_id,
             get_children = get_children,
             get_subtree = get_subtree,
-            get_path = get_path
+            get_path = get_path,
+            get_image_url = get_image_url
         )
             

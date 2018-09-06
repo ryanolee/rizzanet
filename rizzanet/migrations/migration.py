@@ -2,10 +2,10 @@
 class Migration:
     def __init__(self,file,verbose=False):
         self.file = file
-        self.state={}
-        self.verbose=verbose
-        self._id_mappings={}
-        self._content_mappings={}
+        self.state = {}
+        self.verbose = verbose
+        self._id_mappings = {}
+        self._content_mappings = {}
 
     def load(self):
         from yaml import safe_load
@@ -74,8 +74,10 @@ class Migration:
             if not data in self._id_mappings:
                 raise KeyError('Error no mapping to content data '+data+' found')
             # Get content data based of id key mappings
-            if self.verbose: print('Loading content data as it already exsists.')
+            if self.verbose: print('Loading content data as it already exists.')
             content_data = ContentData.get_by_id(self._id_mappings[data])
+        elif isinstance(data, ContentData):
+            return data
         else:
             if self.verbose: print('Creating content data with type {0}'.format(datatype))
             content_data = ContentData.create(datatype,data)
@@ -101,6 +103,7 @@ class Migration:
                     content_data = content_data[0:hit.start()+offset] + str(target_value) + content_data[hit.end()+offset:]
                     #update offset for change in stinglength made by replacement
                     offset += len(str(target_value)) - (hit.end() - hit.start()) 
+                    print('Value {0} interpolated as {1}'.format(hit.group(0), target_value))
             return content_data
         elif isinstance(content_data, list):
             return [self.handle_content_data_substitution(cd) for cd in content_data]

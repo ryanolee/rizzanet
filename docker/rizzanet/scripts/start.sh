@@ -11,5 +11,8 @@ else
     echo "There is no script $PRE_START_PATH"
 fi
 
-# Start Supervisor, with Nginx and uWSGI
-exec /usr/bin/supervisord
+if [[ $RIZZANET_ENV == 'dev' ]] ; then 
+    source /scripts/dev.sh
+else 
+    source /scripts/prod.sh
+fi
