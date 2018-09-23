@@ -52,6 +52,12 @@ def bind_jinja2_functions(app):
             from rizzanet.helpers import ImageHelper
             return ImageHelper(app).get_image_uri(image, alias)
 
+        def get_render_context():
+            from rizzanet.core.context import get_render_context
+            render_ctx = get_render_context()
+            return render_ctx.current()
+            
+
         return dict(
             get_content = get_content_by_id,
             get_content_data = get_content_data_by_id,

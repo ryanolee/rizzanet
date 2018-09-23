@@ -19,10 +19,19 @@ class BaseConfig:
     DB_PORT = os.getenv('DB_PORT','3306')
     DB_NAME = os.getenv('DB_NAME','')
 
+    RIZZANET_ENV = os.getenv('RIZZANET_ENV', 'prod')
+
+    VARNISH_CONFIG = {
+        'VARNISH_PURGE_SERVER_HOSTS': os.getenv('VARNISH_PURGE_SERVER_HOSTS', ''),
+        'VARNISH_ENABLED': os.getenv('VARNISH_ENABLED', False)
+    }
+
     ES_CONFIG = [{
         'host': os.getenv('ES_HOST','localhost'),
         'port': os.getenv('ES_PORT', 9200)
     }]
+
+    API_VERSION = 'v1'
 
     IMAGES = {
         'PATH': '/images',

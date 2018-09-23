@@ -34,9 +34,9 @@ def bind_app_events(app):
         import rizzanet.models
         Base.metadata.create_all(bind=engine)
     from flask import request_tearing_down
+
     @app.after_request
     def close_db(response):
-
         if response.status_code == 500:
             g.db_session.rollback()
         g.db_session.close()

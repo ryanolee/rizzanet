@@ -1,0 +1,1 @@
+from .content_controller import content_controller

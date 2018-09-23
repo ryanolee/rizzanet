@@ -8,7 +8,6 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{item.data.link}}" role="button" aria-haspopup="true" aria-expanded="false">{{item.data.label}}</a>
                     <div class="dropdown-menu">
                         {% for sub_item in item.children %}
-                            {{sub_item}}
                             <a class="dropdown-item" href="{{sub_item.data.link}}">{{sub_item.data.label}}</a>
                         {% endfor %}
                     </div>

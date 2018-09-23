@@ -1,3 +1,5 @@
+import logging
+from rizzanet.core.logging import get_logger, format_var
 
 class GlobalEventPool:
     
@@ -40,4 +42,6 @@ def attachEventListener(name, callback):
 def dispatchEvent(name, *args, **kwargs):
     '''Dispatch a new event from the event pool'''
     global eventpool
+    rizzanet_logger = get_logger()
+    if rizzanet_logger.isEnabledFor(logging.DEBUG): rizzanet_logger.debug('Dispatching event {0!s} with args: {1} and kwargs: {2}'.format(name,format_var(args),format_var(kwargs)))
     return eventpool.dispatchEvent(name, *args, **kwargs)

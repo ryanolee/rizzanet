@@ -32,6 +32,14 @@ class ImageData(Base):
     
     def get_format(self):
         return self.image_format
+    
+    def as_dict(self):
+        return dict(
+            name = self.name,
+            image_hash = self.image_hash,
+            image_format = self.image_format
+        )
+    
 
     @classmethod
     def create(cls, name, data):

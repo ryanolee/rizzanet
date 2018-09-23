@@ -43,6 +43,9 @@ class ContentData(Base):
     def get_datatype_id(self):
         return self.datatype_id
 
+    def get_datatype_object(self):
+        return ContentType.get_by_id(self.datatype_id)
+
     def update(self, data={}, **kwargs):
         for key, value in {**data, **kwargs}.items():
             self.update_attr(key, value)
@@ -82,6 +85,9 @@ class ContentData(Base):
     def get_nodes(self):
         from .content import Content
         return Content.get_by_content_data(self.id)
+
+    def get_id(self):
+        return self.id
 
     @classmethod 
     def create(cls,name,data):

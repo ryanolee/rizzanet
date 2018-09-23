@@ -126,9 +126,18 @@ class Content(Base):
         '''Gets context for a template render'''
         return {**self.content_data.get_data(),**self.get_globals()}
 
+    def get_id(self):
+        return self.id
+
     def render(self):
         '''renders a content location'''
-        return render_template(self.content_type.get_view_path(),**self.get_template_context())
+        from rizzanet.core.context import get_render_context
+        dispatchEvent('RENDER_NODE', self)
+        render_context = get_render_context()
+        render_context.push(self)
+        res = render_template(self.content_type.get_view_path(),**self.get_template_context())
+        render_context.pop()
+        return res
 
     def add_child(self,name,content_data_id,content_type_id=None):
         '''Adds and commits a new child into the database'''
@@ -163,7 +172,11 @@ class Content(Base):
 
     def get_content_data(self):
         '''Gets content data'''
-        return ContentData.get_by_id(self.content_data_id)
+        return self.content_data
+    
+    def get_content_type(self):
+        '''gets content data'''
+        return self.content_type
 
     def get_path(self):
         return self.path
