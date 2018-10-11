@@ -27,6 +27,15 @@ services:
     depends_on:
       - es
   
+  admin:
+    web:
+    container_name: 'rizzanet-web'
+    image: 'ryanolee/rizzanet-admin:dev'
+    build: ./rizzanet/admin/admin_app
+    volumes:
+      - './rizzanet/admin/admin_app/:/app/'
+      
+
   es:
     container_name: 'rizzanet-es'
     image: 'docker.elastic.co/elasticsearch/elasticsearch:6.3.2'
@@ -53,3 +62,8 @@ services:
       - '3307:5432'
     env_file:
       - ./docker/postgres/postgres.env
+  
+  redis:
+    image: redis:latest
+    expose: 
+      - 6379

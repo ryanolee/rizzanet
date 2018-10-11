@@ -28,7 +28,7 @@ class Migration:
         if 'content_type' in self.state:
             for name, data in self.state['content_type'].items():
                 if self.verbose: print("Creating content type {0}".format(name))
-                new_data = ContentType.create(name,{key: CLASS_MAPPINGS[value] for key, value in data['schema'].items()},data['view_path'] if 'view_path' in data else None)
+                new_data = ContentType.create(name,{key: CLASS_MAPPINGS[value] for key, value in data['schema'].items()})
                 self._id_mappings[name] = new_data.id
 
         if 'content_data' in self.state:

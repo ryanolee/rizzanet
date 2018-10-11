@@ -8,6 +8,7 @@ from rizzanet.config import BaseConfig
 from rizzanet.elasticsearch import bind_es_events
 from rizzanet.cache.varnish import init_varnish
 from rizzanet.core.logging import init_logger
+from rizzanet.core.render import init_render_service
 from .db import bind_app_events
 from .cli import bind_cli_commands
 from .login import bind_login
@@ -29,6 +30,7 @@ def create_app(config=None):
     bind_admin_routes(app)
     init_api(app)
     init_varnish(app)
+    init_render_service(app)
     bind_app_events(app)
     bind_jinja2_functions(app)
     bind_es_events(app)

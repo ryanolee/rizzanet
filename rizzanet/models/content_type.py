@@ -10,23 +10,20 @@ class ContentType(Base):
     id = Column(Integer,primary_key=True)
     name = Column(String,unique=True)
     schema = Column(PickleType)
-    view_path = Column(String(255))
 
-    def __init__(self,name,schema,view_path=''):
+    def __init__(self,name,schema):
         from rizzanet.fieldtypes import BaseType
         self.name = name
         for item in schema.values():
             if not issubclass(item, BaseType):
                 raise Exception('Error while creating content type: {0!r} does not inherit from BaseType'.format(item))
         self.schema = schema
-        self.view_path = view_path
 
     def as_dict(self):
         return dict(
             id = self.id,
             name = self.name,
-            schema = self.get_schema_as_dict(),
-            view_path = self.view_path
+            schema = self.get_schema_as_dict()
         )
 
     def verify(self,data):
@@ -45,8 +42,6 @@ class ContentType(Base):
     def get_schema(self):
         return self.schema
 
-    def get_view_path(self):
-        return self.view_path
 
     def get_name(self):
         return self.name
@@ -55,9 +50,9 @@ class ContentType(Base):
         return self.id
 
     @classmethod 
-    def create(cls,name,schema,view_path=''):
+    def create(cls,name,schema):
         '''Creates a new content type'''
-        content_type = cls(name,schema,view_path)
+        content_type = cls(name,schema)
         g.db_session.add(content_type)
         g.db_session.flush()
         g.db_session.refresh(content_type)

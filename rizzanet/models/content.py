@@ -131,13 +131,9 @@ class Content(Base):
 
     def render(self):
         '''renders a content location'''
-        from rizzanet.core.context import get_render_context
-        dispatchEvent('RENDER_NODE', self)
-        render_context = get_render_context()
-        render_context.push(self)
-        res = render_template(self.content_type.get_view_path(),**self.get_template_context())
-        render_context.pop()
-        return res
+        from rizzanet.core.render import get_render_service
+        render_service = get_render_service()
+        return render_service.render(self)
 
     def add_child(self,name,content_data_id,content_type_id=None):
         '''Adds and commits a new child into the database'''

@@ -1,11 +1,13 @@
 
 import os
 from dotenv import DotEnv
-
+from yaml import safe_load
+from rizzanet.config.loader import load_yaml_config
 env_path = os.path.dirname(__file__)+'/../../.env'
 
 if os.path.exists(env_path):
     os.environ.update(DotEnv(env_path).all())
+
 
 
 class BaseConfig:
@@ -57,4 +59,6 @@ class BaseConfig:
             }]
         }
     }
+    
+    CONTROLLERS =  load_yaml_config(os.path.dirname(__file__)+'/controllers.yml')
 

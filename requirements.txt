@@ -18,4 +18,4 @@ blinker==1.4
 dotenv-python==0.0.1
 elasticsearch==6.2.0
 psycopg2==2.7.5
-
+redis==2.10.6

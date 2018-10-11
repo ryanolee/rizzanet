@@ -21,4 +21,4 @@ class BaseES:
         return self
     
     def createIndex(self):
-        self.es.indices.create(index=self.INDEX_NAME)
+        self.es.indices.create(index=self.INDEX_NAME, ignore=[400, 404])

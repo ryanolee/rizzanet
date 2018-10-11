@@ -16,7 +16,6 @@ def bind_cli_commands(app):
         ctx.pop()
 
     def in_app_context(func):
-        '''Redirects to the current full path ('/login/{path}')'''
         @wraps(func)
         def context_wrap(*args,**kwargs):
             ctx = build_app_context()
@@ -25,7 +24,7 @@ def bind_cli_commands(app):
             return res
         return context_wrap
     
-    rizzanet_cli=AppGroup('rizzanet',help='The Commands for rizzanet.')
+    rizzanet_cli = AppGroup('rizzanet',help='The Commands for rizzanet.')
     
     @rizzanet_cli.command(help='Installs rizzanet.')
     @click.option('-u','--username',help='The new username of the admin.', default='rizza')
@@ -101,6 +100,7 @@ def bind_cli_commands(app):
 
     @rizzanet_cli.command(help='Drops all tables from the database.')
     @click.option('-f','--force',help='Forces the command to execute without user confirmation.', is_flag=True)
+    @in_app_context
     def drop_db(force):
         from rizzanet.db import Base,engine
         from rizzanet.models import Content,ContentData,ContentType,User,APIKey,ImageData

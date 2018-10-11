@@ -1,0 +1,13 @@
+types:
+  article:
+    match:
+      content_data/type: article
+    template: 'content_types/article.html'
+  article_folder: 
+    match:
+      content_data/type: article_folder
+    template: 'content_types/article_index.html'
+  article_folder: 
+    match:
+      content_data/type: image
+    template: 'content_types/image.html'

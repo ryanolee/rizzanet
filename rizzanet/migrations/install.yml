@@ -3,13 +3,12 @@ content_type:
     schema:
       title: str
       content: str
-    view_path: content_types/article.html
   article_folder:
     schema:
       articles: crells
       title: str
       content: str
-    view_path: content_types/article_index.html
+    #view_path: content_types/article_index.html
   link_item:
     schema:
       label: str
@@ -17,7 +16,7 @@ content_type:
   image:
     schema:
       image: img
-    view_path: content_types/image.html
+    #view_path: content_types/image.html
   
 content_data:
   article1:

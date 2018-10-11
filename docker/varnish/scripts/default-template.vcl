@@ -32,13 +32,9 @@ sub vcl_recv{
             return(synth(405, "Forbidden"));
         }
         if( req.http.X-rizzanet-ban-tags != ""){
-           
-            set req.http.X-rizzanet-ban-tags = regsuball(req.http.X-rizzanet-ban-tags,",","|");
-            ban( "obj.X-rizzanet-ban-tags ~ '(" + req.http.X-rizzanet-ban-tags + ") '" );
+            ban( "obj.http.X-rizzanet-ban-tags ~ " + req.http.X-rizzanet-ban-tags);
             return(synth(200, "Banned"));
-
         }
-
         return(synth(304, ""));
     }
     return(hash);

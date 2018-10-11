@@ -13,6 +13,6 @@ def bind_varnish_events(app):
 
     attachEventListener('PUSHED_RENDER_CONTEXT', tagger.tag_node)
     attachEventListener('UPDATE_NODE', banner.ban_node)
-        
+    attachEventListener('CREATE_CONTENT', banner.ban_node)
     
     

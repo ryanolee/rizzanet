@@ -56,7 +56,7 @@ def bind_jinja2_functions(app):
             from rizzanet.core.context import get_render_context
             render_ctx = get_render_context()
             return render_ctx.current()
-            
+        
 
         return dict(
             get_content = get_content_by_id,

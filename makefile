@@ -14,22 +14,21 @@ in: start
 	docker exec -it rizzanet-web bash
 
 reinstall: start
-	docker exec rizzanet-web bash --login -c "cd /app/ && flask rizzanet drop_db --force && flask rizzanet install"
+	docker exec rizzanet-web bash --login -c "cd /app/ && flask rizzanet drop-db --force && flask rizzanet install"
 
 install: start
 	docker exec rizzanet-web bash --login -c "cd /app/ && flask rizzanet install"
 
 reindex: start
-	docker exec rizzanet-web bash --login -c "cd /app/ && flask rizzanet reindex_elasticsearch"
+	docker exec rizzanet-web bash --login -c "cd /app/ && flask rizzanet reindex-elasticsearch"
 
 up: start
 down: stop
-
-dev: start
-	docker exec rizzanet-web bash --login -c "cd /app/ && flask rizzanet reindex_elasticsearch"
 
 log:
 	docker-compose up
 
 build:
 	docker-compose build
+
+all: stop build install reindex

@@ -7,9 +7,6 @@ MIGRATION_SCHEMA = {
             "additionalProperties": {
                 "type": "object",
                 "properties": {
-                    "view_path":{
-                        "type": "string"
-                    },
                     "schema":{
                         "type": "object",
                         "additionalProperties":{

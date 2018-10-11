@@ -13,10 +13,13 @@ class VarnishBanner():
                 self.purge_servers = [self.purge_servers]
     
     def ban_node(self, node):
-        from .varnishTagger import varnishTagger
-        tagger = varnishTagger()
+        from .varnishTagger import VarnishTagger
+        tagger = VarnishTagger()
         node_to_ban = tagger.get_tag_for_node(node)
         return self._do_ban(node_to_ban)
+
+    def ban_tag(self, tag):
+        return self._do_ban(tag) 
     
     def _do_ban(self, header_value):
         from http.client import HTTPConnection
