@@ -4,6 +4,11 @@ This project is the current backend that will eventually supercede the current r
 
 ---
 ## Getting Started:
+to clone run
+```bash
+git clone
+git submodule update --init --recursive
+```
 
 To start a local copy of this app running you can use:
 ```shell

@@ -29,6 +29,7 @@ log:
 	docker-compose up
 
 build:
+	sudo rm -rf static/.webassets-cache
 	docker-compose build
 
-all: stop build install reindex
+all: stop build up

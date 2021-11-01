@@ -1,4 +1,4 @@
-version: '3'
+version: '3.0'
 
 services:
 
@@ -19,7 +19,7 @@ services:
     image: 'ryanolee/rizzanet:dev'
     build: .
     ports:
-     - "80:8080"
+     - "8080:8080"
     volumes:
       - '.:/app/'
     env_file:
@@ -28,8 +28,7 @@ services:
       - es
   
   admin:
-    web:
-    container_name: 'rizzanet-web'
+    container_name: 'rizzanet-admin'
     image: 'ryanolee/rizzanet-admin:dev'
     build: ./rizzanet/admin/admin_app
     volumes:
